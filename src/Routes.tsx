@@ -1,6 +1,7 @@
-import { UserQuery } from "hooks/user"
 import React from "react"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
+
+import { UserQuery } from "./hooks/user"
 
 type IPrivateRoute = {
   path: string
