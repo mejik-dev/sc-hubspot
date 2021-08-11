@@ -2,6 +2,7 @@ import React from "react"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
 
 import { UserQuery } from "./hooks/user"
+import Login from "./login"
 
 type IPrivateRoute = {
   path: string
@@ -37,7 +38,9 @@ function RouterProvider(): JSX.Element {
         <Route exact path="/public">
           <div>Public</div>
         </Route>
-        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/public" path="/">
+        <Route exact path="/login" component={Login} />
+
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/login" path="/">
           <div>autheticated user page</div>
         </PrivateRoute>
       </Switch>
