@@ -3,6 +3,7 @@ import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
 
 import { UserQuery } from "./hooks/user"
 import Login from "./login"
+import Register from "./Register"
 
 type IPrivateRoute = {
   path: string
@@ -39,6 +40,7 @@ function RouterProvider(): JSX.Element {
           <div>Public</div>
         </Route>
         <Route exact path="/login" component={Login} />
+        <Route exact path="/register" component={Register} />
 
         <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/login" path="/">
           <div>autheticated user page</div>
