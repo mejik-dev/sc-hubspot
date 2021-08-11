@@ -2,8 +2,8 @@ import React from "react"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
 
 import { UserQuery } from "./hooks/user"
-import Login from "./login"
-import Register from "./Register"
+import Login from "./pages/login/login"
+import Register from "./pages/register/Register"
 
 type IPrivateRoute = {
   path: string
