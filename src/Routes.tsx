@@ -1,3 +1,4 @@
+import { parseCookies } from "nookies"
 import LayoutPage from "pages/layout"
 import React from "react"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
@@ -26,9 +27,10 @@ const PrivateRoute = ({ path, autheticated, nonAuthenticatedRedirect, children }
 }
 
 function RouterProvider(): JSX.Element {
-  const { data, loading } = UserQuery()
+  const { loading } = UserQuery()
+  const cookies = parseCookies()
 
-  const authenticated = Boolean(data?.user)
+  const authenticated = Boolean(cookies?.token)
 
   if (loading) {
     return <b>loading</b>
