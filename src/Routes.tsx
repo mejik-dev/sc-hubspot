@@ -1,3 +1,4 @@
+import LayoutPage from "pages/layout"
 import React from "react"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
 
@@ -43,7 +44,7 @@ function RouterProvider(): JSX.Element {
         <Route exact path="/register" component={Register} />
 
         <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/login" path="/">
-          <div>autheticated user page</div>
+          <LayoutPage />
         </PrivateRoute>
       </Switch>
     </BrowserRouter>
