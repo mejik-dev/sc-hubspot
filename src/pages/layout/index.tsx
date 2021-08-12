@@ -1,18 +1,14 @@
-// import { FC, useEffect, Suspense, useCallback, useState } from "react"
 import "./index.css"
 
-import { LaptopOutlined, NotificationOutlined, UserOutlined } from "@ant-design/icons"
-import { Breadcrumb, Layout, Menu } from "antd"
+import { Layout, Menu } from "antd"
+import { parseCookies } from "nookies"
 import * as React from "react"
 
 // import MenuComponent from "./menu"
 import HeaderComponent from "./header"
 import TagsView from "./tagView"
 
-const { SubMenu } = Menu
 const { Content, Sider } = Layout
-
-const WIDTH = 992
 
 const menuList: { title: string; id: number }[] = [
   {
@@ -34,9 +30,13 @@ const menuList: { title: string; id: number }[] = [
 ]
 
 const LayoutPage: React.FC = () => {
+  const cookies = parseCookies()
+
+  const isLogged = Boolean(cookies.token)
+
   return (
     <Layout className="layout-page">
-      <HeaderComponent />
+      <HeaderComponent isLogged={isLogged} />
       <Layout>
         <Sider width={200} className="layout-page-sider" breakpoint="md">
           <Menu
