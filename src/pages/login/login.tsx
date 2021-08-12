@@ -39,8 +39,8 @@ const Login: React.FC = () => {
           history.push("/")
         }
       })
-      .catch((errors) => {
-        console.log(errors)
+      .catch(() => {
+        alert("Invalid Login")
       })
   }
 
