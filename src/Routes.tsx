@@ -39,9 +39,6 @@ function RouterProvider(): JSX.Element {
   return (
     <BrowserRouter>
       <Switch>
-        <Route exact path="/public">
-          <div>Public</div>
-        </Route>
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
 

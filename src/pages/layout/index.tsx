@@ -1,11 +1,13 @@
 import "./index.css"
 
 import { Layout, Menu } from "antd"
+import { useCustomer } from "hooks/useCustomer"
 import { parseCookies } from "nookies"
 import * as React from "react"
 
 // import MenuComponent from "./menu"
 import HeaderComponent from "./header"
+import TableCustomer from "./TableCustomer"
 import TagsView from "./tagView"
 
 const { Content, Sider } = Layout
@@ -31,8 +33,22 @@ const menuList: { title: string; id: number }[] = [
 
 const LayoutPage: React.FC = () => {
   const cookies = parseCookies()
+  const { data: dataCustomers, loading: loadingGet } = useCustomer()
+
+  // const [customers, setCustomers] = React.useState([])
 
   const isLogged = Boolean(cookies.token)
+
+  // React.useEffect(() => {
+  //   if (dataCustomers?.customers) {
+  //     dataCustomers?.customers.map((item) => {
+  //       return {
+  //         key: item.id,
+  //         ...item,
+  //       }
+  //     })
+  //   }
+  // }, [dataCustomers])
 
   return (
     <Layout className="layout-page">
@@ -53,6 +69,7 @@ const LayoutPage: React.FC = () => {
 
         <Content className="layout-page-content">
           <TagsView />
+          <TableCustomer customers={dataCustomers?.customers} />
         </Content>
       </Layout>
     </Layout>

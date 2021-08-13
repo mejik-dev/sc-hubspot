@@ -19,3 +19,10 @@ interface Register {
   token: string
   user: User
 }
+
+interface Customers {
+  id: string
+  email: string
+  name: string
+  phoneNumber: string
+}
