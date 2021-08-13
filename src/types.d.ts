@@ -14,3 +14,8 @@ interface Login {
   token: string
   user: User
 }
+
+interface Register {
+  token: string
+  user: User
+}
