@@ -35,20 +35,7 @@ const LayoutPage: React.FC = () => {
   const cookies = parseCookies()
   const { data: dataCustomers, loading: loadingGet } = useCustomer()
 
-  // const [customers, setCustomers] = React.useState([])
-
   const isLogged = Boolean(cookies.token)
-
-  // React.useEffect(() => {
-  //   if (dataCustomers?.customers) {
-  //     dataCustomers?.customers.map((item) => {
-  //       return {
-  //         key: item.id,
-  //         ...item,
-  //       }
-  //     })
-  //   }
-  // }, [dataCustomers])
 
   return (
     <Layout className="layout-page">

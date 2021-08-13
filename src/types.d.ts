@@ -20,7 +20,7 @@ interface Register {
   user: User
 }
 
-interface Customers {
+interface Customer {
   id: string
   email: string
   name: string

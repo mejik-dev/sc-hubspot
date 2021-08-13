@@ -15,8 +15,7 @@ const query = {
 }
 
 const useCustomer = () => {
-  const { data, loading, error } = useQuery<{ customers: Customers }>(query.getCustomer)
-  return { data, loading, error }
+  return useQuery<{ customers: Customer[] }>(query.getCustomer)
 }
 
 export { useCustomer }
