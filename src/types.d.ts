@@ -10,15 +10,7 @@ interface Message {
   createdBy: User
 }
 
-interface ItemLogin {
-  token?: string
-}
-
 interface Login {
-  id: string
-  email: string
-  firstName: string
-  login: {
-    [key: string]: ItemLogin
-  }
+  token: string
+  user: User
 }

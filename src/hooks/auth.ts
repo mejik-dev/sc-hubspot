@@ -15,8 +15,8 @@ const query = {
   `,
 }
 
-function useLogin() {
-  const [signUp] = useMutation<Login>(query.login)
+const useLogin = () => {
+  const [signUp] = useMutation<{ login: Login }>(query.login)
   return [signUp]
 }
 
