@@ -1,7 +1,9 @@
 import "./index.css"
 
-import { Layout, Menu } from "antd"
-import { useCustomer } from "hooks/useCustomer"
+import { ExclamationCircleOutlined } from "@ant-design/icons"
+import { Layout, Menu, Modal } from "antd"
+import ModalCustomer from "components/ModalCustomer"
+import { useCreateCustomer, useCustomer, useDeleteCustomer, useUpdateCustomer } from "hooks/useCustomer"
 import { parseCookies } from "nookies"
 import * as React from "react"
 
@@ -11,6 +13,7 @@ import TableCustomer from "./TableCustomer"
 import TagsView from "./tagView"
 
 const { Content, Sider } = Layout
+const { confirm } = Modal
 
 const menuList: { title: string; id: number }[] = [
   {
@@ -31,9 +34,75 @@ const menuList: { title: string; id: number }[] = [
   },
 ]
 
+interface DataCustomer {
+  id: string
+  name: string
+  phoneNumber: string
+  email: string
+  type?: string
+}
+
 const LayoutPage: React.FC = () => {
   const cookies = parseCookies()
-  const { data: dataCustomers, loading: loadingGet } = useCustomer()
+  const { data: dataCustomers, refetch: getCustomerRefect } = useCustomer()
+  const [updateCustomer] = useUpdateCustomer()
+  const [createCustomer] = useCreateCustomer()
+  const [deleteCustomer] = useDeleteCustomer()
+
+  const [openModalFormCS, setOpenModalFormCS] = React.useState(false)
+  const [dataCustomer, setDataCustomer] = React.useState<DataCustomer>({
+    id: "",
+    name: "",
+    phoneNumber: "",
+    email: "",
+    type: "",
+  })
+
+  const handleOpenModal = (type: string) => {
+    setOpenModalFormCS(true)
+    setDataCustomer((prev) => ({ ...prev, type }))
+  }
+
+  const handleUpdateCustomer = (value: ValueFormCustomer) => {
+    updateCustomer({
+      variables: {
+        id: dataCustomer.id,
+        input: value,
+      },
+    }).then(() => {
+      getCustomerRefect()
+    })
+  }
+
+  const handleCreateCustomer = (value: ValueFormCustomer) => {
+    createCustomer({
+      variables: {
+        input: value,
+      },
+    }).then(() => {
+      getCustomerRefect()
+    })
+  }
+
+  const handleDeleteCustomer = (id: string) => {
+    confirm({
+      title: "Do you Want to delete these record?",
+      icon: <ExclamationCircleOutlined />,
+      okType: "danger",
+      onOk() {
+        deleteCustomer({
+          variables: {
+            id,
+          },
+        }).then(() => {
+          getCustomerRefect()
+        })
+      },
+      onCancel() {
+        getCustomerRefect()
+      },
+    })
+  }
 
   const isLogged = Boolean(cookies.token)
 
@@ -55,10 +124,25 @@ const LayoutPage: React.FC = () => {
         </Sider>
 
         <Content className="layout-page-content">
-          <TagsView />
-          <TableCustomer customers={dataCustomers?.customers} />
+          <TagsView handleOpenModal={handleOpenModal} />
+          <TableCustomer
+            customers={dataCustomers?.customers}
+            setOpenModalFormCS={setOpenModalFormCS}
+            setDataCustomer={setDataCustomer}
+            handleDeleteCustomer={handleDeleteCustomer}
+          />
         </Content>
       </Layout>
+      {openModalFormCS && (
+        <ModalCustomer
+          setOpenModalFormCS={setOpenModalFormCS}
+          openModalFormCS={openModalFormCS}
+          dataCustomer={dataCustomer}
+          setDataCustomer={setDataCustomer}
+          handleUpdateCustomer={handleUpdateCustomer}
+          handleCreateCustomer={handleCreateCustomer}
+        />
+      )}
     </Layout>
   )
 }

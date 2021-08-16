@@ -1,7 +1,6 @@
-import { Tabs } from "antd"
+import { SettingOutlined } from "@ant-design/icons"
+import { Dropdown, Menu, Tabs } from "antd"
 import * as React from "react"
-
-import TagsViewAction from "./tagViewAction"
 
 const { TabPane } = Tabs
 
@@ -24,10 +23,33 @@ const tags: { title: string; id: number }[] = [
   },
 ]
 
-const TagsView: React.FC = () => {
+interface TagViewProps {
+  handleOpenModal: (arg0: string) => void
+}
+
+const TagsView: React.FC<TagViewProps> = ({ handleOpenModal }: TagViewProps) => {
   return (
     <div id="pageTabs" style={{ background: "#fff", padding: "6px 4px" }}>
-      <Tabs tabBarStyle={{ margin: 0 }} type="editable-card" hideAdd tabBarExtraContent={<TagsViewAction />}>
+      <Tabs
+        tabBarStyle={{ margin: 0 }}
+        type="editable-card"
+        hideAdd
+        tabBarExtraContent={
+          <Dropdown
+            overlay={
+              <Menu>
+                <Menu.Item key="0" onClick={() => handleOpenModal("create")}>
+                  Create
+                </Menu.Item>
+              </Menu>
+            }
+          >
+            <span id="pageTabs-actions">
+              <SettingOutlined className="tagsView-extra" />
+            </span>
+          </Dropdown>
+        }
+      >
         {tags.map((tag) => (
           <TabPane tab={tag.title} key={tag.id} />
         ))}

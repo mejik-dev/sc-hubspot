@@ -1,4 +1,4 @@
-import { QueryResult, useMutation } from "@apollo/react-hooks"
+import { useMutation } from "@apollo/react-hooks"
 import gql from "graphql-tag"
 
 const query = {

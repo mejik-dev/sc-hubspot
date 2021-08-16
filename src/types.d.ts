@@ -26,3 +26,10 @@ interface Customer {
   name: string
   phoneNumber: string
 }
+
+interface ValueFormCustomer {
+  name: string
+  phoneNumber: string
+  email: string
+  prefix?: string
+}
