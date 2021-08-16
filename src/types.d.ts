@@ -10,12 +10,12 @@ interface Message {
   createdBy: User
 }
 
-interface Login {
+interface ResponseLogin {
   token: string
   user: User
 }
 
-interface Register {
+interface ResponseRegister {
   token: string
   user: User
 }

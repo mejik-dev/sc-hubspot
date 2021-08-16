@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/react-hooks"
+import { QueryResult, useMutation } from "@apollo/react-hooks"
 import gql from "graphql-tag"
 
 const query = {
@@ -30,12 +30,12 @@ const querySignUp = {
 }
 
 const useLogin = () => {
-  const [signIn] = useMutation<{ login: Login }>(query.login)
+  const [signIn] = useMutation<{ login: ResponseLogin }>(query.login)
   return [signIn]
 }
 
 const useRegister = () => {
-  const [signUp] = useMutation<{ register: Register }>(querySignUp.register)
+  const [signUp] = useMutation<{ register: ResponseRegister }>(querySignUp.register)
   return [signUp]
 }
 
