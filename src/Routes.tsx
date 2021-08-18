@@ -1,5 +1,6 @@
 import { parseCookies } from "nookies"
 import LayoutPage from "pages/dashboard"
+import Welcome from "pages/welcome"
 import React from "react"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
 
@@ -29,7 +30,7 @@ const PrivateRoute = ({ path, autheticated, nonAuthenticatedRedirect, children }
 function RouterProvider(): JSX.Element {
   const { loading, data } = UserQuery()
 
-  const authenticated = Boolean(data?.user.id)
+  const authenticated = Boolean(data?.user?.id)
 
   if (loading) {
     return <b>loading</b>
@@ -38,10 +39,11 @@ function RouterProvider(): JSX.Element {
   return (
     <BrowserRouter>
       <Switch>
+        <Route exact path="/" component={Welcome} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
 
-        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/login" path="/">
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dasboard">
           <LayoutPage />
         </PrivateRoute>
       </Switch>
