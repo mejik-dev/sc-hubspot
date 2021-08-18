@@ -1,4 +1,4 @@
-.layout-login {
+.layout-signup {
   height: 100vh;
   max-height: 100vh;
   display: flex;
@@ -9,11 +9,11 @@
   padding: 20px 20px;
 }
 
-.header-login {
+.header-signup {
   background-color: #fff;
 }
 
-.footer-login {
+.footer-signup {
   background-color: #fff;
   display: flex;
   justify-content: center;
@@ -22,15 +22,14 @@
   padding: 0px;
 }
 
-.container-content-login {
+.container-content-signup {
   display: flex;
   align-items: center;
   flex-direction: column;
   position: relative;
-  width: 100%;
 }
 
-.container-content-login h1 {
+.container-content-signup h1 {
   margin-top: -10px;
   font-family: Poppins;
   font-style: normal;
@@ -39,16 +38,15 @@
   line-height: 24px;
 }
 
-.login-page-form {
+.signup-page-form {
   margin-top: 20px;
-  width: 100%;
 }
 
-.login-page-form h1 {
+.signup-page-form h1 {
   text-align: center;
 }
 
-.login-page-form_button {
+.signup-page-form_button {
   width: 100%;
 }
 
@@ -65,7 +63,7 @@
   margin-left: 3px !important;
 }
 
-.input-form-login {
+.input-form-signup {
   color: rgba(0, 0, 0, 0.5);
   border-color: rgba(0, 0, 0, 0.5);
   height: 48px;
@@ -77,7 +75,7 @@
   line-height: 24px;
 }
 
-.input-form-login::placeholder {
+.input-form-signup::placeholder {
   color: rgba(0, 0, 0, 0.5);
 }
 

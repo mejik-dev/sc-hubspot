@@ -1,12 +1,15 @@
 import "styles/login.css"
 
-import { Button, Form, Input, Typography } from "antd"
+import Icon from "@ant-design/icons"
+import { Button, Col, Form, Input, Layout, Row, Typography } from "antd"
+import { Logo } from "assets/icons"
 import { useLogin } from "hooks/auth"
 import { setCookie } from "nookies"
 import * as React from "react"
 import { useHistory } from "react-router-dom"
 
-const { Link } = Typography
+const { Link, Text } = Typography
+const { Header, Footer, Content } = Layout
 
 const Login: React.FC = () => {
   const [login] = useLogin()
@@ -16,6 +19,8 @@ const Login: React.FC = () => {
     email: "",
     password: "",
   })
+
+  const disabled = !value.email || !value.password
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue((previous) => ({ ...previous, [e.target.name]: e.target.value }))
@@ -35,9 +40,11 @@ const Login: React.FC = () => {
           path: "/",
         })
 
-        if (token) {
-          history.push("/")
-        }
+        setTimeout(() => {
+          if (token) {
+            history.push("/dashboard")
+          }
+        }, 2000)
       })
       .catch(() => {
         alert("Invalid Login")
@@ -45,23 +52,47 @@ const Login: React.FC = () => {
   }
 
   return (
-    <div className="login-page">
-      <Form className="login-page-form" onFinish={handleLogin}>
-        <h2>HUBSPOT</h2>
-        <Form.Item name="email" rules={[{ required: true, message: "Email" }]}>
-          <Input placeholder="Email" name="email" value={value.email} onChange={onChange} />
-        </Form.Item>
-        <Form.Item name="password" rules={[{ required: true, message: "Password" }]}>
-          <Input type="password" placeholder="Password" name="password" value={value.password} onChange={onChange} />
-        </Form.Item>
-        <Form.Item>
-          <Button htmlType="submit" type="primary" className="login-page-form_button">
-            Login
-          </Button>
-        </Form.Item>
-        <Link href="/register">Register</Link>
-      </Form>
-    </div>
+    <Layout className="layout-login">
+      <Header className="header-login">
+        <Icon component={Logo} />
+      </Header>
+      <Content className="container-content-login">
+        <h1>Create your free account</h1>
+
+        <Form className="login-page-form" onFinish={handleLogin}>
+          <Form.Item name="email" rules={[{ required: true, message: "Email" }]}>
+            <Input
+              className="input-form-login"
+              placeholder="Email"
+              name="email"
+              value={value.email}
+              onChange={onChange}
+            />
+          </Form.Item>
+          <Form.Item name="password" rules={[{ required: true, message: "Password" }]}>
+            <Input
+              className="input-form-login"
+              type="password"
+              placeholder="Password"
+              name="password"
+              value={value.password}
+              onChange={onChange}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button disabled={disabled} htmlType="submit" className="button-primary-register">
+              Login
+            </Button>
+          </Form.Item>
+        </Form>
+      </Content>
+      <Footer className="footer-login">
+        <Text>You have account?</Text>
+        <Link href="/register" className="button-signin">
+          Register
+        </Link>
+      </Footer>
+    </Layout>
   )
 }
 

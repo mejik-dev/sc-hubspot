@@ -62,7 +62,6 @@
 
 .paragraph-1 {
   position: static;
-  width: 330px;
   height: 51px;
   left: 20px;
   top: 60px;
@@ -94,7 +93,6 @@
   padding: 0px;
 
   position: absolute;
-  width: 238px;
   height: 37px;
   bottom: 60px;
 }
@@ -103,7 +101,6 @@
   margin: 0px 2px;
 
   position: static;
-  width: 216px;
   height: 17px;
   left: 0px;
   top: 0px;
@@ -129,7 +126,7 @@
 .button-primary {
   background-color: #f47e28;
   color: #fff;
-  width: 163px;
+  min-width: 163px;
   height: 56px;
   border-radius: 4px;
   font-family: Poppins;
@@ -140,7 +137,7 @@
 }
 
 .button-default {
-  width: 163px;
+  min-width: 163px;
   height: 56px;
   border-radius: 4px;
   font-family: Poppins;
@@ -150,4 +147,15 @@
   line-height: 24px;
   border-color: #f47e28;
   color: #f47e28;
+}
+
+/* small mobile screen */
+@media only screen and (max-width: 320px) {
+  .button-primary {
+    min-width: 120px;
+  }
+
+  .button-default {
+    min-width: 120px;
+  }
 }

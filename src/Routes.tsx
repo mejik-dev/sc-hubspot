@@ -1,4 +1,3 @@
-import { parseCookies } from "nookies"
 import LayoutPage from "pages/dashboard"
 import Welcome from "pages/welcome"
 import React from "react"
