@@ -2,8 +2,10 @@ import "styles/customer.css"
 
 import Icon from "@ant-design/icons"
 import { ExclamationCircleOutlined } from "@ant-design/icons"
-import { Input, Layout, List, Modal, Select, Tabs } from "antd"
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons"
+import { Button, Input, Layout, List, Modal, Select, Tabs } from "antd"
 import { AddContact } from "assets/icons"
+import ListComponet from "components/ListComponet"
 import ModalCustomer from "components/ModalCustomer"
 import ModalDetailContact from "components/ModalDetailContact"
 import { useCustomerMutation, useCustomerQuery } from "hooks/customer"
@@ -14,14 +16,6 @@ const { Search } = Input
 const { TabPane } = Tabs
 const { Option } = Select
 const { confirm } = Modal
-
-const data = [
-  "Racing car sprays burning fuel into crowd.",
-  "Japanese princess to wed commoner.",
-  "Australian walks 100km after outback crash.",
-  "Man charged over missing wedding girl.",
-  "Los Angeles battles huge wildfires.",
-]
 
 interface Grouping {
   key: string
@@ -77,12 +71,6 @@ const Customer: React.FC = () => {
   const handleOpenModal = (type: string) => {
     setOpenModalFormCS(true)
     setDataCustomer((prev) => ({ ...prev, type }))
-  }
-
-  const handleEditCustomer = (value: any) => {
-    delete value.__typename
-    setDataCustomer({ ...value })
-    setOpenModalDetailCS(true)
   }
 
   const handleUpdateCustomer = (value: ValueFormCustomer) => {
@@ -157,31 +145,30 @@ const Customer: React.FC = () => {
               const contacts = item.contacts
 
               return (
-                <List
+                <ListComponet
+                  setOpenModalFormCS={setOpenModalFormCS}
+                  setDataCustomer={setDataCustomer}
                   key={item.key}
-                  size="large"
-                  header={<div>{item.key}</div>}
                   dataSource={contacts}
-                  renderItem={(item) => <List.Item onClick={() => handleEditCustomer(item)}>{item.name}</List.Item>}
+                  handleDeleteCustomer={handleDeleteCustomer}
                 />
               )
             })}
           </TabPane>
           <TabPane tab="Company" key="2">
-            <List
-              size="large"
-              header={<div>Header</div>}
-              footer={<div>Footer</div>}
-              bordered
-              dataSource={data}
-              renderItem={(item) => (
-                <List.Item>
-                  <div onClick={() => handleEditCustomer(item)} aria-hidden="true">
-                    {item}
-                  </div>
-                </List.Item>
-              )}
-            />
+            {Array.from(grouping || []).map((item) => {
+              const contacts = item.contacts
+
+              return (
+                <ListComponet
+                  setOpenModalFormCS={setOpenModalFormCS}
+                  setDataCustomer={setDataCustomer}
+                  key={item.key}
+                  dataSource={contacts}
+                  handleDeleteCustomer={handleDeleteCustomer}
+                />
+              )
+            })}
           </TabPane>
         </Tabs>
       </Content>
