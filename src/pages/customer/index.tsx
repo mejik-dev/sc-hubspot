@@ -3,7 +3,7 @@ import "styles/customer.css"
 import Icon from "@ant-design/icons"
 import { ExclamationCircleOutlined } from "@ant-design/icons"
 import { Input, Layout, Modal, Select, Tabs } from "antd"
-import { AddContact } from "assets/icons"
+import { AddCompany, AddContact } from "assets/icons"
 import List from "components/List"
 import { useCompanyQuery } from "hooks/company"
 import { useCustomerMutation, useCustomerQuery } from "hooks/customer"
@@ -28,11 +28,14 @@ const Customer: React.FC = () => {
   const history = useHistory()
 
   const { data: dataCustomers, refetch: refetchDataQustomers } = useCustomerQuery()
+
   const { data: companies } = useCompanyQuery()
+  const { deleteCustomer } = useCustomerMutation()
 
   const [groupedCustomer, setGroupedCustomer] = React.useState<IGroupedData<Customer[]>[]>()
   const [groupedCompanies, setGroupedCompanies] = React.useState<IGroupedData<Company[]>[]>()
-  const { deleteCustomer } = useCustomerMutation()
+  const [typeTabs, setTypeTabs] = React.useState<number>(1)
+  const [searchText, setSearchText] = React.useState<string>("")
 
   function groupDataByFirstCharName<Type extends BaseData>(data: Type[]) {
     return data.reduce<{ [key: string]: Type[] }>((groups, item) => {
@@ -65,11 +68,15 @@ const Customer: React.FC = () => {
     }
   }, [companies])
 
-  function callback(key: string) {
-    console.log(key)
+  function changeTabs(key: string) {
+    if (parseInt(key) === 1) {
+      setTypeTabs(parseInt(key))
+    } else {
+      setTypeTabs(parseInt(key))
+    }
   }
 
-  function handleChange(value: string) {
+  const handleChange = (value: string) => {
     console.log(`selected ${value}`)
   }
 
@@ -103,21 +110,41 @@ const Customer: React.FC = () => {
   return (
     <Layout className="layout-contact">
       <div className="btn-add">
-        <Icon
-          component={AddContact}
-          onClick={() =>
-            history.push({
-              pathname: "/dashboard/add-customer",
-              state: {
-                mode: "create",
-              },
-            })
-          }
-        />
+        {typeTabs === 1 ? (
+          <Icon
+            component={AddContact}
+            onClick={() =>
+              history.push({
+                pathname: "/dashboard/add-customer",
+                state: {
+                  mode: "create",
+                },
+              })
+            }
+          />
+        ) : (
+          <Icon
+            component={AddCompany}
+            onClick={() =>
+              history.push({
+                pathname: "/dashboard/add-company",
+                state: {
+                  mode: "create",
+                },
+              })
+            }
+          />
+        )}
       </div>
-      <Search className="input-search" placeholder="Contacts" style={{ padding: "0px 20px" }} />
+      <Search
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+        className="input-search"
+        placeholder="Contacts"
+        style={{ padding: "0px 20px" }}
+      />
       <Content className="container-content-dashboard">
-        <Tabs defaultActiveKey="1" onChange={callback} className="tab-list">
+        <Tabs defaultActiveKey="1" onChange={changeTabs} className="tab-list">
           <TabPane tab="Contacts" key="1">
             <div className="wrapper-select">
               <Select defaultValue="lucy" className="input-select" onChange={handleChange}>
