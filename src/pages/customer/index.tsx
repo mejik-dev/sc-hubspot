@@ -4,9 +4,10 @@ import Icon from "@ant-design/icons"
 import { ExclamationCircleOutlined } from "@ant-design/icons"
 import { Input, Layout, Modal, Select, Tabs } from "antd"
 import { AddContact } from "assets/icons"
-import ListComponet from "components/ListComponet"
+import List from "components/List"
 import ModalCustomer from "components/ModalCustomer"
 import ModalDetailContact from "components/ModalDetailContact"
+import { useCompanyQuery } from "hooks/company"
 import { useCustomerMutation, useCustomerQuery } from "hooks/customer"
 import * as React from "react"
 
@@ -16,9 +17,9 @@ const { TabPane } = Tabs
 const { Option } = Select
 const { confirm } = Modal
 
-interface IGroupedCostumers {
+interface IGroupedData<T> {
   key: string
-  contacts: Customer[]
+  data: T
 }
 
 interface DataCustomer {
@@ -29,10 +30,16 @@ interface DataCustomer {
   type?: string
 }
 
+interface BaseData {
+  name: string
+}
+
 const Customer: React.FC = () => {
   const { data: dataCustomers, refetch } = useCustomerQuery()
+  const { data: companies } = useCompanyQuery()
 
-  const [groupedCustomer, setGroupedCustomer] = React.useState<IGroupedCostumers[]>()
+  const [groupedCustomer, setGroupedCustomer] = React.useState<IGroupedData<Customer[]>[]>()
+  const [groupedCompanies, setGroupedCompanies] = React.useState<IGroupedData<Company[]>[]>()
   const { createCustomer, updateCustomer, deleteCustomer } = useCustomerMutation()
 
   const [openModalFormCS, setOpenModalFormCS] = React.useState(false)
@@ -45,19 +52,36 @@ const Customer: React.FC = () => {
     type: "",
   })
 
-  React.useEffect(() => {
-    const groupedCostumer = dataCustomers?.customers.reduce<{ [key: string]: Customer[] }>((groups, contact) => {
-      const letter = contact.name.charAt(0)
+  function groupDataByFirstCharName<Type extends BaseData>(data: Type[]) {
+    return data.reduce<{ [key: string]: Type[] }>((groups, item) => {
+      const letter = item.name.charAt(0)
 
       groups[letter] = groups[letter] || []
-      groups[letter].push(contact)
+      groups[letter].push(item)
 
       return groups
     }, {})
-    if (groupedCostumer) {
-      setGroupedCustomer(Object.keys(groupedCostumer).map((key) => ({ key, contacts: groupedCostumer[key] })))
+  }
+
+  React.useEffect(() => {
+    if (dataCustomers?.customers.length) {
+      const groupedCustomer = groupDataByFirstCharName<Customer>(dataCustomers.customers)
+      if (groupedCustomer) {
+        const newData = Object.keys(groupedCustomer).map((key) => ({ key, data: groupedCustomer[key] }))
+        setGroupedCustomer(newData)
+      }
     }
   }, [dataCustomers])
+
+  React.useEffect(() => {
+    if (companies?.companies.length) {
+      const groupedCompanies = groupDataByFirstCharName<Company>(companies.companies)
+      if (groupedCompanies) {
+        const newData = Object.keys(groupedCompanies).map((key) => ({ key, data: groupedCompanies[key] }))
+        setGroupedCompanies(newData)
+      }
+    }
+  }, [companies])
 
   function callback(key: string) {
     console.log(key)
@@ -142,32 +166,28 @@ const Customer: React.FC = () => {
               </Select>
             </div>
             {Array.from(groupedCustomer || []).map((item) => {
-              const contacts = item.contacts
-
               return (
-                <ListComponet
+                <List
                   key={item.key}
-                  label={item.key}
-                  setOpenModalFormCS={setOpenModalFormCS}
-                  setDataCustomer={setDataCustomer}
-                  dataSource={contacts}
-                  handleDeleteCustomer={handleDeleteCustomer}
+                  title={item.key}
+                  list={item.data}
+                  renderItem={(item) => item.name}
+                  onDelete={() => console.log("delete")}
+                  onEdit={() => setOpenModalFormCS(true)}
                 />
               )
             })}
           </TabPane>
           <TabPane tab="Company" key="2">
-            {Array.from(groupedCustomer || []).map((item) => {
-              const contacts = item.contacts
-
+            {Array.from(groupedCompanies || []).map((item) => {
               return (
-                <ListComponet
-                  label={item.key}
-                  setOpenModalFormCS={setOpenModalFormCS}
-                  setDataCustomer={setDataCustomer}
+                <List
                   key={item.key}
-                  dataSource={contacts}
-                  handleDeleteCustomer={handleDeleteCustomer}
+                  title={item.key}
+                  list={item.data}
+                  renderItem={(item) => item.name}
+                  onDelete={() => console.log("delete")}
+                  onEdit={() => console.log("edit")}
                 />
               )
             })}
