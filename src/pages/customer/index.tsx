@@ -4,12 +4,11 @@ import Icon from "@ant-design/icons"
 import { ExclamationCircleOutlined } from "@ant-design/icons"
 import { Input, Layout, Modal, Select, Tabs } from "antd"
 import { AddCompany, AddContact } from "assets/icons"
-import ListComponet from "components/ListComponet"
-import ModalCustomer from "components/ModalCustomer"
-import ModalDetailContact from "components/ModalDetailContact"
+import List from "components/List"
 import { useCompanyQuery } from "hooks/company"
 import { useCustomerMutation, useCustomerQuery } from "hooks/customer"
 import * as React from "react"
+import { useHistory } from "react-router-dom"
 
 const { Content } = Layout
 const { Search } = Input
@@ -17,71 +16,59 @@ const { TabPane } = Tabs
 const { Option } = Select
 const { confirm } = Modal
 
-interface IGroupedCostumers {
+interface IGroupedData<T> {
   key: string
-  contacts: Customer[]
+  data: T
 }
-
-interface IGroupedCompanies {
-  key: string
-  contacts: Company[]
-}
-
-interface DataCustomer {
-  id: string
+interface BaseData {
   name: string
-  phoneNumber: string
-  email: string
-  type?: string
 }
 
 const Customer: React.FC = () => {
-  const { data: dataCustomers, refetch } = useCustomerQuery()
-  const { data: dataCompanies } = useCompanyQuery()
+  const history = useHistory()
 
-  const [groupedCustomer, setGroupedCustomer] = React.useState<IGroupedCostumers[]>()
-  const [groupCompanies, setGroupCompanies] = React.useState<IGroupedCompanies[]>()
+  const { data: dataCustomers, refetch: refetchDataQustomers } = useCustomerQuery()
+
+  const { data: companies } = useCompanyQuery()
+  const { deleteCustomer } = useCustomerMutation()
+
+  const [groupedCustomer, setGroupedCustomer] = React.useState<IGroupedData<Customer[]>[]>()
+  const [groupedCompanies, setGroupedCompanies] = React.useState<IGroupedData<Company[]>[]>()
   const [typeTabs, setTypeTabs] = React.useState<number>(1)
   const [searchText, setSearchText] = React.useState<string>("")
-  const { createCustomer, updateCustomer, deleteCustomer } = useCustomerMutation()
 
-  const [openModalFormCS, setOpenModalFormCS] = React.useState(false)
-  const [openModalDetailCS, setOpenModalDetailCS] = React.useState(false)
-  const [dataCustomer, setDataCustomer] = React.useState<DataCustomer>({
-    id: "",
-    name: "",
-    phoneNumber: "",
-    email: "",
-    type: "",
-  })
+  function groupDataByFirstCharName<Type extends BaseData>(data: Type[]) {
+    return data.reduce<{ [key: string]: Type[] }>((groups, item) => {
+      const letter = item.name.charAt(0)
 
-  React.useEffect(() => {
-    const groupedCostumer = dataCustomers?.customers.reduce<{ [key: string]: Customer[] }>((groups, contact) => {
-      const letter = contact.name.charAt(0)
       groups[letter] = groups[letter] || []
-      groups[letter].push(contact)
+      groups[letter].push(item)
+
       return groups
     }, {})
-    if (groupedCostumer) {
-      setGroupedCustomer(Object.keys(groupedCostumer).map((key) => ({ key, contacts: groupedCostumer[key] })))
+  }
+
+  React.useEffect(() => {
+    if (dataCustomers?.customers.length) {
+      const groupedCustomer = groupDataByFirstCharName<Customer>(dataCustomers.customers)
+      if (groupedCustomer) {
+        const newData = Object.keys(groupedCustomer).map((key) => ({ key, data: groupedCustomer[key] }))
+        setGroupedCustomer(newData)
+      }
     }
   }, [dataCustomers])
 
   React.useEffect(() => {
-    const groupCompanies = dataCompanies?.companies.reduce<{ [key: string]: Company[] }>((groups, contact) => {
-      const letter = contact.name.charAt(0)
-
-      groups[letter] = groups[letter] || []
-      groups[letter].push(contact)
-
-      return groups
-    }, {})
-    if (groupCompanies) {
-      setGroupCompanies(Object.keys(groupCompanies).map((key) => ({ key, contacts: groupCompanies[key] })))
+    if (companies?.companies.length) {
+      const groupedCompanies = groupDataByFirstCharName<Company>(companies.companies)
+      if (groupedCompanies) {
+        const newData = Object.keys(groupedCompanies).map((key) => ({ key, data: groupedCompanies[key] }))
+        setGroupedCompanies(newData)
+      }
     }
-  }, [dataCompanies])
+  }, [companies])
 
-  const changeTabs = (key: string) => {
+  function changeTabs(key: string) {
     if (parseInt(key) === 1) {
       setTypeTabs(parseInt(key))
     } else {
@@ -93,32 +80,7 @@ const Customer: React.FC = () => {
     console.log(`selected ${value}`)
   }
 
-  const handleOpenModal = (type: string) => {
-    setOpenModalFormCS(true)
-    setDataCustomer((prev) => ({ ...prev, type }))
-  }
-
-  const handleUpdateCustomer = (value: ValueFormCustomer) => {
-    updateCustomer({
-      variables: {
-        id: dataCustomer.id,
-        input: value,
-      },
-    }).then(() => {
-      refetch()
-    })
-  }
-
-  const handleCreateCustomer = (value: ValueFormCustomer) => {
-    createCustomer({
-      variables: {
-        input: value,
-      },
-    }).then(() => {
-      refetch()
-    })
-  }
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleDeleteCustomer = (id: string) => {
     confirm({
       title: "Do you Want to delete these record?",
@@ -130,31 +92,49 @@ const Customer: React.FC = () => {
             id,
           },
         }).then(() => {
-          refetch()
+          refetchDataQustomers()
         })
       },
       onCancel() {
-        refetch()
+        refetchDataQustomers()
       },
     })
   }
 
-  // const onSearch = () => {
-  //   if (!searchText) {
-  //     return groupedCustomer
-  //   }
-
-  //   return groupedCustomer?.map((item) => {
-  //     return item.contacts.filter((customer) => {
-  //       return customer.name.toLowerCase().includes(searchText.toLowerCase())
-  //     })
-  //   })
-  // }
+  React.useEffect(() => {
+    if (history.action === "POP" && dataCustomers) {
+      refetchDataQustomers()
+    }
+  }, [dataCustomers, history.action, refetchDataQustomers])
 
   return (
     <Layout className="layout-contact">
       <div className="btn-add">
-        <Icon component={typeTabs === 1 ? AddContact : AddCompany} onClick={() => handleOpenModal("create")} />
+        {typeTabs === 1 ? (
+          <Icon
+            component={AddContact}
+            onClick={() =>
+              history.push({
+                pathname: "/dashboard/add-customer",
+                state: {
+                  mode: "create",
+                },
+              })
+            }
+          />
+        ) : (
+          <Icon
+            component={AddCompany}
+            onClick={() =>
+              history.push({
+                pathname: "/dashboard/add-company",
+                state: {
+                  mode: "create",
+                },
+              })
+            }
+          />
+        )}
       </div>
       <Search
         value={searchText}
@@ -185,58 +165,39 @@ const Customer: React.FC = () => {
               </Select>
             </div>
             {Array.from(groupedCustomer || []).map((item) => {
-              const contacts = item.contacts
-
               return (
-                <ListComponet
+                <List
                   key={item.key}
-                  label={item.key}
-                  setOpenModalFormCS={setOpenModalFormCS}
-                  setDataCustomer={setDataCustomer}
-                  dataSource={contacts}
-                  handleDeleteCustomer={handleDeleteCustomer}
+                  title={item.key}
+                  list={item.data}
+                  renderItem={(item) => item.name}
+                  onDelete={(item) => handleDeleteCustomer(item.id)}
+                  onEdit={(item) =>
+                    history.push({
+                      pathname: "/dashboard/update-customer",
+                      state: { mode: "update", data: item },
+                    })
+                  }
                 />
               )
             })}
           </TabPane>
           <TabPane tab="Company" key="2">
-            {Array.from(groupCompanies || []).map((item) => {
-              const contacts = item.contacts
-
+            {Array.from(groupedCompanies || []).map((item) => {
               return (
-                <ListComponet
-                  label={item.key}
-                  setOpenModalFormCS={setOpenModalFormCS}
-                  setDataCustomer={setDataCustomer}
+                <List
                   key={item.key}
-                  dataSource={contacts}
-                  handleDeleteCustomer={handleDeleteCustomer}
+                  title={item.key}
+                  list={item.data}
+                  renderItem={(item) => item.name}
+                  onDelete={() => console.log("delete")}
+                  onEdit={() => console.log("edit")}
                 />
               )
             })}
           </TabPane>
         </Tabs>
       </Content>
-      {openModalFormCS && (
-        <ModalCustomer
-          setOpenModalFormCS={setOpenModalFormCS}
-          openModalFormCS={openModalFormCS}
-          dataCustomer={dataCustomer}
-          setDataCustomer={setDataCustomer}
-          handleUpdateCustomer={handleUpdateCustomer}
-          handleCreateCustomer={handleCreateCustomer}
-        />
-      )}
-      {openModalDetailCS && (
-        <ModalDetailContact
-          setOpenModalFormCS={setOpenModalDetailCS}
-          openModalFormCS={openModalDetailCS}
-          dataCustomer={dataCustomer}
-          setDataCustomer={setDataCustomer}
-          handleUpdateCustomer={handleUpdateCustomer}
-          handleCreateCustomer={handleCreateCustomer}
-        />
-      )}
     </Layout>
   )
 }
