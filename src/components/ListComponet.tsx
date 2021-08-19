@@ -32,8 +32,6 @@ const ListComponet: React.FC<ListProps> = ({
     setOpenModalFormCS(true)
   }
 
-  console.log("key", dataSource)
-
   return (
     <>
       <List
