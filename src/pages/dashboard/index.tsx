@@ -3,7 +3,7 @@ import "./index.css"
 import { ExclamationCircleOutlined } from "@ant-design/icons"
 import { Layout, Menu, Modal } from "antd"
 import ModalCustomer from "components/ModalCustomer"
-import { useCreateCustomer, useCustomer, useDeleteCustomer, useUpdateCustomer } from "hooks/useCustomer"
+import { useCustomerMutation, useCustomerQuery } from "hooks/customer"
 import { parseCookies } from "nookies"
 import * as React from "react"
 
@@ -44,10 +44,8 @@ interface DataCustomer {
 
 const LayoutPage: React.FC = () => {
   const cookies = parseCookies()
-  const { data: dataCustomers, refetch: getCustomerRefect } = useCustomer()
-  const [updateCustomer] = useUpdateCustomer()
-  const [createCustomer] = useCreateCustomer()
-  const [deleteCustomer] = useDeleteCustomer()
+  const { data: dataCustomers, refetch } = useCustomerQuery()
+  const { createCustomer, updateCustomer, deleteCustomer } = useCustomerMutation()
 
   const [openModalFormCS, setOpenModalFormCS] = React.useState(false)
   const [dataCustomer, setDataCustomer] = React.useState<DataCustomer>({
@@ -70,7 +68,7 @@ const LayoutPage: React.FC = () => {
         input: value,
       },
     }).then(() => {
-      getCustomerRefect()
+      refetch()
     })
   }
 
@@ -80,7 +78,7 @@ const LayoutPage: React.FC = () => {
         input: value,
       },
     }).then(() => {
-      getCustomerRefect()
+      refetch()
     })
   }
 
@@ -95,11 +93,11 @@ const LayoutPage: React.FC = () => {
             id,
           },
         }).then(() => {
-          getCustomerRefect()
+          refetch()
         })
       },
       onCancel() {
-        getCustomerRefect()
+        refetch()
       },
     })
   }

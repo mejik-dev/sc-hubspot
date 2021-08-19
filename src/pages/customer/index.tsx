@@ -5,7 +5,7 @@ import { ExclamationCircleOutlined } from "@ant-design/icons"
 import { Input, Layout, List, Modal, Select, Tabs } from "antd"
 import { AddContact } from "assets/icons"
 import ModalCustomer from "components/ModalCustomer"
-import { useCreateCustomer, useCustomer, useDeleteCustomer, useUpdateCustomer } from "hooks/useCustomer"
+import { useCustomerMutation, useCustomerQuery } from "hooks/customer"
 import * as React from "react"
 
 const { Content } = Layout
@@ -36,12 +36,10 @@ interface DataCustomer {
 }
 
 const Customer: React.FC = () => {
-  const { data: dataCustomers, refetch: getCustomerRefect } = useCustomer()
+  const { data: dataCustomers, refetch } = useCustomerQuery()
 
   const [grouping, setGrouping] = React.useState<Grouping[]>()
-  const [updateCustomer] = useUpdateCustomer()
-  const [createCustomer] = useCreateCustomer()
-  const [deleteCustomer] = useDeleteCustomer()
+  const { createCustomer, updateCustomer, deleteCustomer } = useCustomerMutation()
 
   const [openModalFormCS, setOpenModalFormCS] = React.useState(false)
   const [dataCustomer, setDataCustomer] = React.useState<DataCustomer>({
@@ -86,7 +84,7 @@ const Customer: React.FC = () => {
         input: value,
       },
     }).then(() => {
-      getCustomerRefect()
+      refetch()
     })
   }
 
@@ -96,7 +94,7 @@ const Customer: React.FC = () => {
         input: value,
       },
     }).then(() => {
-      getCustomerRefect()
+      refetch()
     })
   }
 
@@ -111,11 +109,11 @@ const Customer: React.FC = () => {
             id,
           },
         }).then(() => {
-          getCustomerRefect()
+          refetch()
         })
       },
       onCancel() {
-        getCustomerRefect()
+        refetch()
       },
     })
   }
