@@ -4,6 +4,8 @@ import { MoreOutlined } from "@ant-design/icons"
 import Icon from "@ant-design/icons"
 import { Card, PageHeader, Tabs, Tag, Typography } from "antd"
 import { Chat, Msg, Phone } from "assets/icons/actions/index"
+import BasicList from "components/detail-contact/BasicList"
+import SelectList from "components/detail-contact/SelectList"
 import * as React from "react"
 import { useHistory } from "react-router-dom"
 
@@ -32,7 +34,7 @@ const DetailCustomer: React.FC = () => {
   )
 
   return (
-    <div>
+    <div style={{ height: "100%", background: "#f1faf9" }}>
       <PageHeader
         title={TitleModal}
         onBack={() => history.goBack()}
@@ -41,8 +43,9 @@ const DetailCustomer: React.FC = () => {
             <MoreOutlined />
           </div>,
         ]}
+        style={{ background: "#fff" }}
       />
-      <div className="modal-action">
+      <div className="detail-action">
         <div className="icon-actions">
           <Icon component={Phone} onClick={() => console.log("click")} />
           <Text>Call</Text>
@@ -71,7 +74,17 @@ const DetailCustomer: React.FC = () => {
             </Card>
           </div>
         </TabPane>
-        <TabPane tab="About" key="2"></TabPane>
+        <TabPane tab="About" key="2">
+          <div style={{ padding: 20, marginTop: 10 }}>
+            <p style={{ marginBottom: 10 }}>About Reiner</p>
+          </div>
+          <BasicList label="Email" value="reiner@gmail.com" classNameValue="text-style" />
+          <BasicList label="Phone" classNameValue="text-style" />
+          <SelectList label="Contact Owner" value="Ega Radiegtya" classNameValue="select-style" />
+          <SelectList label="Last contacted" classNameValue="select-style" />
+          <SelectList label="Lifecycle stage" value="Subscriber" classNameValue="select-style" />
+          <SelectList label="Lead status" value="New" classNameValue="select-style" />
+        </TabPane>
       </Tabs>
     </div>
   )
