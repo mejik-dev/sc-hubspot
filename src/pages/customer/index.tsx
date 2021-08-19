@@ -5,6 +5,7 @@ import { ExclamationCircleOutlined } from "@ant-design/icons"
 import { Input, Layout, List, Modal, Select, Tabs } from "antd"
 import { AddContact } from "assets/icons"
 import ModalCustomer from "components/ModalCustomer"
+import ModalDetailContact from "components/ModalDetailContact"
 import { useCreateCustomer, useCustomer, useDeleteCustomer, useUpdateCustomer } from "hooks/useCustomer"
 import * as React from "react"
 
@@ -44,6 +45,7 @@ const Customer: React.FC = () => {
   const [deleteCustomer] = useDeleteCustomer()
 
   const [openModalFormCS, setOpenModalFormCS] = React.useState(false)
+  const [openModalDetailCS, setOpenModalDetailCS] = React.useState(false)
   const [dataCustomer, setDataCustomer] = React.useState<DataCustomer>({
     id: "",
     name: "",
@@ -77,6 +79,12 @@ const Customer: React.FC = () => {
   const handleOpenModal = (type: string) => {
     setOpenModalFormCS(true)
     setDataCustomer((prev) => ({ ...prev, type }))
+  }
+
+  const handleEditCustomer = (value: any) => {
+    delete value.__typename
+    setDataCustomer({ ...value })
+    setOpenModalDetailCS(true)
   }
 
   const handleUpdateCustomer = (value: ValueFormCustomer) => {
@@ -156,7 +164,7 @@ const Customer: React.FC = () => {
                   size="large"
                   header={<div>{item.key}</div>}
                   dataSource={contacts}
-                  renderItem={(item) => <List.Item>{item.name}</List.Item>}
+                  renderItem={(item) => <List.Item onClick={() => handleEditCustomer(item)}>{item.name}</List.Item>}
                 />
               )
             })}
@@ -168,7 +176,13 @@ const Customer: React.FC = () => {
               footer={<div>Footer</div>}
               bordered
               dataSource={data}
-              renderItem={(item) => <List.Item>{item}</List.Item>}
+              renderItem={(item) => (
+                <List.Item>
+                  <div onClick={() => handleEditCustomer(item)} aria-hidden="true">
+                    {item}
+                  </div>
+                </List.Item>
+              )}
             />
           </TabPane>
         </Tabs>
@@ -177,6 +191,16 @@ const Customer: React.FC = () => {
         <ModalCustomer
           setOpenModalFormCS={setOpenModalFormCS}
           openModalFormCS={openModalFormCS}
+          dataCustomer={dataCustomer}
+          setDataCustomer={setDataCustomer}
+          handleUpdateCustomer={handleUpdateCustomer}
+          handleCreateCustomer={handleCreateCustomer}
+        />
+      )}
+      {openModalDetailCS && (
+        <ModalDetailContact
+          setOpenModalFormCS={setOpenModalDetailCS}
+          openModalFormCS={openModalDetailCS}
           dataCustomer={dataCustomer}
           setDataCustomer={setDataCustomer}
           handleUpdateCustomer={handleUpdateCustomer}
