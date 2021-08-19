@@ -146,9 +146,10 @@ const Customer: React.FC = () => {
 
               return (
                 <ListComponet
+                  key={item.key}
+                  label={item.key}
                   setOpenModalFormCS={setOpenModalFormCS}
                   setDataCustomer={setDataCustomer}
-                  key={item.key}
                   dataSource={contacts}
                   handleDeleteCustomer={handleDeleteCustomer}
                 />
@@ -161,6 +162,7 @@ const Customer: React.FC = () => {
 
               return (
                 <ListComponet
+                  label={item.key}
                   setOpenModalFormCS={setOpenModalFormCS}
                   setDataCustomer={setDataCustomer}
                   key={item.key}
