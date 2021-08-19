@@ -12,7 +12,7 @@ const { Link, Text } = Typography
 const { Header, Footer, Content } = Layout
 
 const Login: React.FC = () => {
-  const [login] = useLogin()
+  const login = useLogin()
   const history = useHistory()
 
   const [value, setValue] = React.useState({

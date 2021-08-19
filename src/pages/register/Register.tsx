@@ -12,7 +12,7 @@ const { Link, Text } = Typography
 const { Header, Footer, Content } = Layout
 
 const Register: React.FC = () => {
-  const [register] = useRegister()
+  const register = useRegister()
   const history = useHistory()
 
   const [values, setValues] = React.useState({
