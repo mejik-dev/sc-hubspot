@@ -5,6 +5,7 @@ const query = {
   getCompany: gql`
     query getCompanies {
       companies {
+        id
         name
         address
         phoneNumber
@@ -14,6 +15,7 @@ const query = {
   createCompany: gql`
     mutation createCompany($input: CreateCompanyInput!) {
       createCompany(input: $input) {
+        id
         name
         address
         phoneNumber
@@ -23,6 +25,7 @@ const query = {
   updateCompany: gql`
     mutation updateCompany($id: String!, $input: UpdateCompanyInput!) {
       updateCompany(id: $id, input: $input) {
+        id
         name
         address
         phoneNumber
@@ -32,6 +35,7 @@ const query = {
   deleteCompany: gql`
     mutation deleteCompany($id: String!) {
       deleteCompany(id: $id) {
+        id
         name
         address
         phoneNumber

@@ -5,10 +5,10 @@ import { ExclamationCircleOutlined } from "@ant-design/icons"
 import { Input, Layout, Modal, Select, Tabs } from "antd"
 import { AddCompany, AddContact } from "assets/icons"
 import List from "components/List"
-import { useCompanyQuery } from "hooks/company"
+import { useCompanyMutation, useCompanyQuery } from "hooks/company"
 import { useCustomerMutation, useCustomerQuery } from "hooks/customer"
 import * as React from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 
 const { Content } = Layout
 const { Search } = Input
@@ -26,15 +26,17 @@ interface BaseData {
 
 const Customer: React.FC = () => {
   const history = useHistory()
+  const { currentTab } = useParams<{ currentTab: string }>()
 
   const { data: dataCustomers, refetch: refetchDataQustomers } = useCustomerQuery()
-
-  const { data: companies } = useCompanyQuery()
   const { deleteCustomer } = useCustomerMutation()
+
+  const { data: companies, refetch: refetchDataCompanies } = useCompanyQuery()
+  const { deleteCompany } = useCompanyMutation()
 
   const [groupedCustomer, setGroupedCustomer] = React.useState<IGroupedData<Customer[]>[]>()
   const [groupedCompanies, setGroupedCompanies] = React.useState<IGroupedData<Company[]>[]>()
-  const [typeTabs, setTypeTabs] = React.useState<number>(1)
+  const [activeTab, setActiveTab] = React.useState<number>(currentTab === "companies" ? 2 : 1)
   const [searchText, setSearchText] = React.useState<string>("")
 
   function groupDataByFirstCharName<Type extends BaseData>(data: Type[]) {
@@ -68,11 +70,29 @@ const Customer: React.FC = () => {
     }
   }, [companies])
 
+  React.useEffect(() => {
+    if (history.action === "POP") {
+      if (currentTab === "companies") {
+        refetchDataCompanies()
+      } else {
+        refetchDataQustomers()
+      }
+    }
+  }, [dataCustomers, companies, history.action, refetchDataQustomers, refetchDataCompanies, currentTab])
+
+  React.useEffect(() => {
+    if (currentTab === "companies") {
+      setActiveTab(2)
+    } else {
+      setActiveTab(1)
+    }
+  }, [currentTab])
+
   function changeTabs(key: string) {
     if (parseInt(key) === 1) {
-      setTypeTabs(parseInt(key))
+      history.replace("/dashboard/contacts")
     } else {
-      setTypeTabs(parseInt(key))
+      history.replace("/dashboard/companies")
     }
   }
 
@@ -80,7 +100,6 @@ const Customer: React.FC = () => {
     console.log(`selected ${value}`)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleDeleteCustomer = (id: string) => {
     confirm({
       title: "Do you Want to delete these record?",
@@ -95,22 +114,30 @@ const Customer: React.FC = () => {
           refetchDataQustomers()
         })
       },
-      onCancel() {
-        refetchDataQustomers()
+    })
+  }
+
+  const handleDeleteCompany = (id: string) => {
+    confirm({
+      title: "Do you Want to delete these record?",
+      icon: <ExclamationCircleOutlined />,
+      okType: "danger",
+      onOk() {
+        deleteCompany({
+          variables: {
+            id,
+          },
+        }).then(() => {
+          refetchDataCompanies()
+        })
       },
     })
   }
 
-  React.useEffect(() => {
-    if (history.action === "POP" && dataCustomers) {
-      refetchDataQustomers()
-    }
-  }, [dataCustomers, history.action, refetchDataQustomers])
-
   return (
     <Layout className="layout-contact">
       <div className="btn-add">
-        {typeTabs === 1 ? (
+        {activeTab === 1 ? (
           <Icon
             component={AddContact}
             onClick={() =>
@@ -144,7 +171,7 @@ const Customer: React.FC = () => {
         style={{ padding: "0px 20px" }}
       />
       <Content className="container-content-dashboard">
-        <Tabs defaultActiveKey="1" onChange={changeTabs} className="tab-list">
+        <Tabs activeKey={String(activeTab)} onChange={changeTabs} className="tab-list">
           <TabPane tab="Contacts" key="1">
             <div className="wrapper-select">
               <Select defaultValue="lucy" className="input-select" onChange={handleChange}>
@@ -190,8 +217,13 @@ const Customer: React.FC = () => {
                   title={item.key}
                   list={item.data}
                   renderItem={(item) => item.name}
-                  onDelete={() => console.log("delete")}
-                  onEdit={() => console.log("edit")}
+                  onDelete={(item) => handleDeleteCompany(item.id)}
+                  onEdit={(item) =>
+                    history.push({
+                      pathname: "/dashboard/update-company",
+                      state: { mode: "update", data: item },
+                    })
+                  }
                 />
               )
             })}
