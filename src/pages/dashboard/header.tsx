@@ -21,7 +21,7 @@ const HeaderComponent: React.FC<HeaderProps> = ({ isLogged }: HeaderProps) => {
   return (
     <Header className="layout-page-header">
       <div className="logo" style={{ width: 200 }}>
-        {/* <img src={ReactSvg} alt="" style={{ marginRight: "20px" }} /> */}
+        <img src={ReactSvg} alt="" style={{ marginRight: "20px" }} />
       </div>
       <div className="layout-page-header-main">
         <div></div>

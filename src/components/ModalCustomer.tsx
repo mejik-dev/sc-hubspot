@@ -1,4 +1,5 @@
-import { Form, Input, Modal } from "antd"
+import { ArrowLeftOutlined } from "@ant-design/icons"
+import { Form, Input, message, Modal } from "antd"
 import * as React from "react"
 
 interface ModalProps {
@@ -31,14 +32,19 @@ const ModalCustomer: React.FC<ModalProps> = ({
   const onFinish = (values: ValueFormCustomer) => {
     delete values.prefix
 
-    if (dataCustomer.type === "create") {
-      handleCreateCustomer(values)
+    const onFill = !values.name || !values.email || !values.phoneNumber
+    if (onFill) {
+      message.error("All fields must be filled")
     } else {
-      handleUpdateCustomer(values)
+      if (dataCustomer.type === "create") {
+        handleCreateCustomer(values)
+      } else {
+        handleUpdateCustomer(values)
+      }
+      form.resetFields()
+      setDataCustomer({ name: "", email: "", phoneNumber: "", type: "", id: "" })
+      setOpenModalFormCS(false)
     }
-    form.resetFields()
-    setDataCustomer({ name: "", email: "", phoneNumber: "", type: "", id: "" })
-    setOpenModalFormCS(false)
   }
 
   const handleCancel = () => {
@@ -58,9 +64,26 @@ const ModalCustomer: React.FC<ModalProps> = ({
     },
   }
 
+  const TitleModal = (
+    <div>
+      <ArrowLeftOutlined onClick={handleCancel} />
+    </div>
+  )
+
   return (
     <>
-      <Modal title="Basic Modal" visible={openModalFormCS} onOk={form.submit} onCancel={handleCancel}>
+      <Modal
+        title={TitleModal}
+        visible={openModalFormCS}
+        onOk={form.submit}
+        // onCancel={handleCancel}
+        closeIcon={
+          <div className="btn-save-modal" aria-hidden="true" onClick={() => onFinish(form.getFieldsValue())}>
+            Save
+          </div>
+        }
+        footer={null}
+      >
         <Form
           {...formItemLayout}
           form={form}

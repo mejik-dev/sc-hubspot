@@ -4,7 +4,7 @@ import { gql } from "graphql-tag"
 const queryGetCustomers = {
   getCustomer: gql`
     query {
-      customers {
+      customers(orderBy: name_ASC) {
         id
         name
         email
