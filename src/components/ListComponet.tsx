@@ -3,7 +3,7 @@ import { Button, List } from "antd"
 import * as React from "react"
 
 interface ListProps {
-  key: string
+  label: string
   dataSource: Customer[]
   handleDeleteCustomer: (arg0: string) => void
   setOpenModalFormCS: (arg0: boolean) => void
@@ -20,7 +20,7 @@ interface DataCustomer {
 }
 
 const ListComponet: React.FC<ListProps> = ({
-  key,
+  label,
   dataSource,
   handleDeleteCustomer,
   setDataCustomer,
@@ -32,12 +32,14 @@ const ListComponet: React.FC<ListProps> = ({
     setOpenModalFormCS(true)
   }
 
+  console.log("key", label)
+
   return (
     <>
       <List
-        key={key}
+        key={label}
         size="large"
-        header={<div>{key}</div>}
+        header={<div>{label}</div>}
         dataSource={dataSource}
         renderItem={(item) => (
           <List.Item

@@ -2,75 +2,71 @@ import { FetchResult, MutationHookOptions, QueryResult, useMutation, useQuery } 
 import { gql } from "graphql-tag"
 
 const query = {
-  getCustomer: gql`
-    query {
-      customers(orderBy: name_ASC) {
-        id
+  getCompany: gql`
+    query getCompanies {
+      companies {
         name
-        email
+        address
         phoneNumber
       }
     }
   `,
-  createCustomer: gql`
-    mutation CreateCustomer($input: CreateCustomerInput!) {
-      createCustomer(input: $input) {
-        id
+  createCompany: gql`
+    mutation createCompany($input: CreateCompanyInput!) {
+      createCompany(input: $input) {
         name
-        email
+        address
         phoneNumber
       }
     }
   `,
-  updateCustomer: gql`
-    mutation UpdateCustomer($id: String!, $input: UpdateCustomerInput!) {
-      updateCustomer(id: $id, input: $input) {
-        id
+  updateCompany: gql`
+    mutation updateCompany($id: String!, $input: UpdateCompanyInput!) {
+      updateCompany(id: $id, input: $input) {
         name
-        email
+        address
         phoneNumber
       }
     }
   `,
-  deleteCustomer: gql`
-    mutation DeleteCustomer($id: String!) {
-      deleteCustomer(id: $id) {
-        id
+  deleteCompany: gql`
+    mutation deleteCompany($id: String!) {
+      deleteCompany(id: $id) {
         name
-        email
+        address
         phoneNumber
       }
     }
   `,
 }
 
-type CustomerQuery = QueryResult<
+type CompanyQuery = QueryResult<
   {
-    customers: Customer[]
+    Companys: Company[]
   },
-  Record<string, Customer>
+  Record<string, Company>
 >
 
-type CustomerMutation = {
-  createCustomer: (options: MutationHookOptions) => Promise<FetchResult<{ createCustomer: Customer }>>
-  updateCustomer: (options: MutationHookOptions) => Promise<FetchResult<{ updateCustomer: Customer }>>
-  deleteCustomer: (options: MutationHookOptions) => Promise<FetchResult<{ deleteCustomer: Customer }>>
+type CompanyMutation = {
+  createCompany: (options: MutationHookOptions) => Promise<FetchResult<{ createCompany: Company }>>
+  updateCompany: (options: MutationHookOptions) => Promise<FetchResult<{ updateCompany: Company }>>
+  deleteCompany: (options: MutationHookOptions) => Promise<FetchResult<{ deleteCompany: Company }>>
 }
 
-const useCustomerQuery = (): CustomerQuery => {
-  return useQuery<{ customers: Customer[] }>(query.getCustomer)
+const useCompanyQuery = (): CompanyQuery => {
+  return useQuery<{ Companys: Company[] }>(query.getCompany)
 }
 
-const useCustomerMutation = (): CustomerMutation => {
-  const [createCustomer] = useMutation<{ createCustomer: Customer }>(query.createCustomer)
-  const [updateCustomer] = useMutation<{ updateCustomer: Customer }>(query.updateCustomer)
-  const [deleteCustomer] = useMutation<{ deleteCustomer: Customer }>(query.deleteCustomer)
+const useCompanyMutation = (): CompanyMutation => {
+  const [createCompany] = useMutation<{ createCompany: Company }>(query.createCompany)
+  const [updateCompany] = useMutation<{ updateCompany: Company }>(query.updateCompany)
+  const [deleteCompany] = useMutation<{ deleteCompany: Company }>(query.deleteCompany)
 
   return {
-    createCustomer,
-    deleteCustomer,
-    updateCustomer,
+    createCompany,
+    deleteCompany,
+    updateCompany,
   }
 }
 
-export { useCustomerMutation, useCustomerQuery }
+export { useCompanyMutation, useCompanyQuery }

@@ -4,4 +4,15 @@ body, html {
   font-family: "Poppins", sans-serif;
   font-style: normal;
   font-weight: 500;
+  background-color: #E5E5E5;
+}
+
+.App {
+  margin: 0px auto;
+  position: relative;
+  max-width: 480px;
+  width: 100%;
+  box-sizing: border-box;
+  height: 100vh;
+  min-height: calc(100vh - 60px);
 }
