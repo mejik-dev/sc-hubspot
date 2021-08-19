@@ -2,9 +2,11 @@ import "styles/customer.css"
 
 import Icon from "@ant-design/icons"
 import { ExclamationCircleOutlined } from "@ant-design/icons"
-import { Input, Layout, List, Modal, Select, Tabs } from "antd"
+import { Input, Layout, Modal, Select, Tabs } from "antd"
 import { AddContact } from "assets/icons"
+import ListComponet from "components/ListComponet"
 import ModalCustomer from "components/ModalCustomer"
+import ModalDetailContact from "components/ModalDetailContact"
 import { useCustomerMutation, useCustomerQuery } from "hooks/customer"
 import * as React from "react"
 
@@ -13,14 +15,6 @@ const { Search } = Input
 const { TabPane } = Tabs
 const { Option } = Select
 const { confirm } = Modal
-
-const data = [
-  "Racing car sprays burning fuel into crowd.",
-  "Japanese princess to wed commoner.",
-  "Australian walks 100km after outback crash.",
-  "Man charged over missing wedding girl.",
-  "Los Angeles battles huge wildfires.",
-]
 
 interface IGroupedCostumers {
   key: string
@@ -42,6 +36,7 @@ const Customer: React.FC = () => {
   const { createCustomer, updateCustomer, deleteCustomer } = useCustomerMutation()
 
   const [openModalFormCS, setOpenModalFormCS] = React.useState(false)
+  const [openModalDetailCS, setOpenModalDetailCS] = React.useState(false)
   const [dataCustomer, setDataCustomer] = React.useState<DataCustomer>({
     id: "",
     name: "",
@@ -150,25 +145,30 @@ const Customer: React.FC = () => {
               const contacts = item.contacts
 
               return (
-                <List
+                <ListComponet
+                  setOpenModalFormCS={setOpenModalFormCS}
+                  setDataCustomer={setDataCustomer}
                   key={item.key}
-                  size="large"
-                  header={<div>{item.key}</div>}
                   dataSource={contacts}
-                  renderItem={(item) => <List.Item>{item.name}</List.Item>}
+                  handleDeleteCustomer={handleDeleteCustomer}
                 />
               )
             })}
           </TabPane>
           <TabPane tab="Company" key="2">
-            <List
-              size="large"
-              header={<div>Header</div>}
-              footer={<div>Footer</div>}
-              bordered
-              dataSource={data}
-              renderItem={(item) => <List.Item>{item}</List.Item>}
-            />
+            {Array.from(groupedCustomer || []).map((item) => {
+              const contacts = item.contacts
+
+              return (
+                <ListComponet
+                  setOpenModalFormCS={setOpenModalFormCS}
+                  setDataCustomer={setDataCustomer}
+                  key={item.key}
+                  dataSource={contacts}
+                  handleDeleteCustomer={handleDeleteCustomer}
+                />
+              )
+            })}
           </TabPane>
         </Tabs>
       </Content>
@@ -176,6 +176,16 @@ const Customer: React.FC = () => {
         <ModalCustomer
           setOpenModalFormCS={setOpenModalFormCS}
           openModalFormCS={openModalFormCS}
+          dataCustomer={dataCustomer}
+          setDataCustomer={setDataCustomer}
+          handleUpdateCustomer={handleUpdateCustomer}
+          handleCreateCustomer={handleCreateCustomer}
+        />
+      )}
+      {openModalDetailCS && (
+        <ModalDetailContact
+          setOpenModalFormCS={setOpenModalDetailCS}
+          openModalFormCS={openModalDetailCS}
           dataCustomer={dataCustomer}
           setDataCustomer={setDataCustomer}
           handleUpdateCustomer={handleUpdateCustomer}

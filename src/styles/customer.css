@@ -147,7 +147,7 @@
   position: fixed;
   right: 20px;
   bottom: 54px;
-  z-index: 10px;
+  z-index: 999;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -161,6 +161,8 @@
 .btn-add:active {
   background-color: #55988d;
 }
+
+/* start modal add customer */
 
 .ant-modal,
 .ant-modal-content {
@@ -197,10 +199,81 @@
   background: rgba(85, 152, 141, 0.1);
   border-radius: 8px;
 }
+/* end modal create customer */
+
+/* start modal detail customer */
+
+.header-subtitle {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 24px;
+  color: #000000;
+}
+
+.header-title {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.modal-action {
+  height: 98px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 20px;
+}
+
+.icon-actions {
+  margin: 0px 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .ant-modal-body {
   padding: 0px;
 }
 
-.ant-input {
-  border: none;
+.ant-card-body {
+  padding: 7px 12px;
+  min-height: 63px;
 }
+
+.tag-card {
+  width: 111px;
+  height: 24px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 5px;
+
+  background: rgba(85, 152, 141, 0.3);
+}
+
+.title-card {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 24px;
+  margin-bottom: 5px;
+}
+
+.subtitle-card {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 24px;
+  margin-bottom: 5px;
+}
+
+/* end modal detail customer */
