@@ -27,6 +27,13 @@ interface Customer {
   phoneNumber: string
 }
 
+interface Company {
+  id: string
+  name: string
+  address?: string
+  phoneNumber?: string
+}
+
 interface ValueFormCustomer {
   name: string
   phoneNumber: string
