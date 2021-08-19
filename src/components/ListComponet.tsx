@@ -4,7 +4,7 @@ import * as React from "react"
 
 interface ListProps {
   label: string
-  dataSource: Customer[]
+  dataSource: Customer[] | Company[] | any[]
   handleDeleteCustomer: (arg0: string) => void
   setOpenModalFormCS: (arg0: boolean) => void
   setDataCustomer: (dataCustomer: DataCustomer) => void
@@ -32,7 +32,7 @@ const ListComponet: React.FC<ListProps> = ({
     setOpenModalFormCS(true)
   }
 
-  console.log("key", label)
+  console.log("key", dataSource)
 
   return (
     <>

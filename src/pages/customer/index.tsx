@@ -7,6 +7,7 @@ import { AddCompany, AddContact } from "assets/icons"
 import ListComponet from "components/ListComponet"
 import ModalCustomer from "components/ModalCustomer"
 import ModalDetailContact from "components/ModalDetailContact"
+import { useCompanyQuery } from "hooks/company"
 import { useCustomerMutation, useCustomerQuery } from "hooks/customer"
 import * as React from "react"
 
@@ -21,6 +22,11 @@ interface IGroupedCostumers {
   contacts: Customer[]
 }
 
+interface IGroupedCompanies {
+  key: string
+  contacts: Company[]
+}
+
 interface DataCustomer {
   id: string
   name: string
@@ -31,8 +37,10 @@ interface DataCustomer {
 
 const Customer: React.FC = () => {
   const { data: dataCustomers, refetch } = useCustomerQuery()
+  const { data: dataCompanies } = useCompanyQuery()
 
   const [groupedCustomer, setGroupedCustomer] = React.useState<IGroupedCostumers[]>()
+  const [groupCompanies, setGroupCompanies] = React.useState<IGroupedCompanies[]>()
   const [typeTabs, setTypeTabs] = React.useState<number>(1)
   const [searchText, setSearchText] = React.useState<string>("")
   const { createCustomer, updateCustomer, deleteCustomer } = useCustomerMutation()
@@ -50,10 +58,8 @@ const Customer: React.FC = () => {
   React.useEffect(() => {
     const groupedCostumer = dataCustomers?.customers.reduce<{ [key: string]: Customer[] }>((groups, contact) => {
       const letter = contact.name.charAt(0)
-
       groups[letter] = groups[letter] || []
       groups[letter].push(contact)
-
       return groups
     }, {})
     if (groupedCostumer) {
@@ -61,7 +67,21 @@ const Customer: React.FC = () => {
     }
   }, [dataCustomers])
 
-  function changeTabs(key: string) {
+  React.useEffect(() => {
+    const groupCompanies = dataCompanies?.companies.reduce<{ [key: string]: Company[] }>((groups, contact) => {
+      const letter = contact.name.charAt(0)
+
+      groups[letter] = groups[letter] || []
+      groups[letter].push(contact)
+
+      return groups
+    }, {})
+    if (groupCompanies) {
+      setGroupCompanies(Object.keys(groupCompanies).map((key) => ({ key, contacts: groupCompanies[key] })))
+    }
+  }, [dataCompanies])
+
+  const changeTabs = (key: string) => {
     if (parseInt(key) === 1) {
       setTypeTabs(parseInt(key))
     } else {
@@ -69,7 +89,7 @@ const Customer: React.FC = () => {
     }
   }
 
-  function handleChange(value: string) {
+  const handleChange = (value: string) => {
     console.log(`selected ${value}`)
   }
 
@@ -180,7 +200,7 @@ const Customer: React.FC = () => {
             })}
           </TabPane>
           <TabPane tab="Company" key="2">
-            {Array.from(groupedCustomer || []).map((item) => {
+            {Array.from(groupCompanies || []).map((item) => {
               const contacts = item.contacts
 
               return (

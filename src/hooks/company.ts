@@ -42,7 +42,7 @@ const query = {
 
 type CompanyQuery = QueryResult<
   {
-    Companys: Company[]
+    companies: Company[]
   },
   Record<string, Company>
 >
@@ -54,7 +54,7 @@ type CompanyMutation = {
 }
 
 const useCompanyQuery = (): CompanyQuery => {
-  return useQuery<{ Companys: Company[] }>(query.getCompany)
+  return useQuery<{ companies: Company[] }>(query.getCompany)
 }
 
 const useCompanyMutation = (): CompanyMutation => {
