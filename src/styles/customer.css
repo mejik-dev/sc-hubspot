@@ -144,7 +144,7 @@
 }
 
 .btn-add {
-  position: fixed;
+  position: absolute;
   right: 20px;
   bottom: 54px;
   z-index: 999;

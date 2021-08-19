@@ -8,6 +8,7 @@ body, html {
 }
 
 .App {
+  background-color: white;
   margin: 0px auto;
   position: relative;
   max-width: 480px;

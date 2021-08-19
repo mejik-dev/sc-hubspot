@@ -5,11 +5,10 @@ import { ExclamationCircleOutlined } from "@ant-design/icons"
 import { Input, Layout, Modal, Select, Tabs } from "antd"
 import { AddContact } from "assets/icons"
 import List from "components/List"
-import ModalCustomer from "components/ModalCustomer"
-import ModalDetailContact from "components/ModalDetailContact"
 import { useCompanyQuery } from "hooks/company"
 import { useCustomerMutation, useCustomerQuery } from "hooks/customer"
 import * as React from "react"
+import { useHistory } from "react-router-dom"
 
 const { Content } = Layout
 const { Search } = Input
@@ -21,36 +20,19 @@ interface IGroupedData<T> {
   key: string
   data: T
 }
-
-interface DataCustomer {
-  id: string
-  name: string
-  phoneNumber: string
-  email: string
-  type?: string
-}
-
 interface BaseData {
   name: string
 }
 
 const Customer: React.FC = () => {
-  const { data: dataCustomers, refetch } = useCustomerQuery()
+  const history = useHistory()
+
+  const { data: dataCustomers, refetch: refetchDataQustomers } = useCustomerQuery()
   const { data: companies } = useCompanyQuery()
 
   const [groupedCustomer, setGroupedCustomer] = React.useState<IGroupedData<Customer[]>[]>()
   const [groupedCompanies, setGroupedCompanies] = React.useState<IGroupedData<Company[]>[]>()
-  const { createCustomer, updateCustomer, deleteCustomer } = useCustomerMutation()
-
-  const [openModalFormCS, setOpenModalFormCS] = React.useState(false)
-  const [openModalDetailCS, setOpenModalDetailCS] = React.useState(false)
-  const [dataCustomer, setDataCustomer] = React.useState<DataCustomer>({
-    id: "",
-    name: "",
-    phoneNumber: "",
-    email: "",
-    type: "",
-  })
+  const { deleteCustomer } = useCustomerMutation()
 
   function groupDataByFirstCharName<Type extends BaseData>(data: Type[]) {
     return data.reduce<{ [key: string]: Type[] }>((groups, item) => {
@@ -91,32 +73,6 @@ const Customer: React.FC = () => {
     console.log(`selected ${value}`)
   }
 
-  const handleOpenModal = (type: string) => {
-    setOpenModalFormCS(true)
-    setDataCustomer((prev) => ({ ...prev, type }))
-  }
-
-  const handleUpdateCustomer = (value: ValueFormCustomer) => {
-    updateCustomer({
-      variables: {
-        id: dataCustomer.id,
-        input: value,
-      },
-    }).then(() => {
-      refetch()
-    })
-  }
-
-  const handleCreateCustomer = (value: ValueFormCustomer) => {
-    createCustomer({
-      variables: {
-        input: value,
-      },
-    }).then(() => {
-      refetch()
-    })
-  }
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleDeleteCustomer = (id: string) => {
     confirm({
@@ -129,19 +85,35 @@ const Customer: React.FC = () => {
             id,
           },
         }).then(() => {
-          refetch()
+          refetchDataQustomers()
         })
       },
       onCancel() {
-        refetch()
+        refetchDataQustomers()
       },
     })
   }
 
+  React.useEffect(() => {
+    if (history.action === "POP" && dataCustomers) {
+      refetchDataQustomers()
+    }
+  }, [dataCustomers, history.action, refetchDataQustomers])
+
   return (
     <Layout className="layout-contact">
       <div className="btn-add">
-        <Icon component={AddContact} onClick={() => handleOpenModal("create")} />
+        <Icon
+          component={AddContact}
+          onClick={() =>
+            history.push({
+              pathname: "/dashboard/add-customer",
+              state: {
+                mode: "create",
+              },
+            })
+          }
+        />
       </div>
       <Search className="input-search" placeholder="Contacts" style={{ padding: "0px 20px" }} />
       <Content className="container-content-dashboard">
@@ -172,8 +144,13 @@ const Customer: React.FC = () => {
                   title={item.key}
                   list={item.data}
                   renderItem={(item) => item.name}
-                  onDelete={() => console.log("delete")}
-                  onEdit={() => setOpenModalFormCS(true)}
+                  onDelete={(item) => handleDeleteCustomer(item.id)}
+                  onEdit={(item) =>
+                    history.push({
+                      pathname: "/dashboard/update-customer",
+                      state: { mode: "update", data: item },
+                    })
+                  }
                 />
               )
             })}
@@ -194,26 +171,6 @@ const Customer: React.FC = () => {
           </TabPane>
         </Tabs>
       </Content>
-      {openModalFormCS && (
-        <ModalCustomer
-          setOpenModalFormCS={setOpenModalFormCS}
-          openModalFormCS={openModalFormCS}
-          dataCustomer={dataCustomer}
-          setDataCustomer={setDataCustomer}
-          handleUpdateCustomer={handleUpdateCustomer}
-          handleCreateCustomer={handleCreateCustomer}
-        />
-      )}
-      {openModalDetailCS && (
-        <ModalDetailContact
-          setOpenModalFormCS={setOpenModalDetailCS}
-          openModalFormCS={openModalDetailCS}
-          dataCustomer={dataCustomer}
-          setDataCustomer={setDataCustomer}
-          handleUpdateCustomer={handleUpdateCustomer}
-          handleCreateCustomer={handleCreateCustomer}
-        />
-      )}
     </Layout>
   )
 }
