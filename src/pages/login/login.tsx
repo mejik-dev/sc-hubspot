@@ -1,7 +1,7 @@
 import "styles/login.css"
 
 import Icon from "@ant-design/icons"
-import { Button, Col, Form, Input, Layout, Row, Typography } from "antd"
+import { Button, Form, Input, Layout, Typography } from "antd"
 import { Logo } from "assets/icons"
 import { useLogin } from "hooks/auth"
 import { setCookie } from "nookies"

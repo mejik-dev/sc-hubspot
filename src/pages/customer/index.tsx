@@ -22,7 +22,7 @@ const data = [
   "Los Angeles battles huge wildfires.",
 ]
 
-interface Grouping {
+interface IGroupedCostumers {
   key: string
   contacts: Customer[]
 }
@@ -38,7 +38,7 @@ interface DataCustomer {
 const Customer: React.FC = () => {
   const { data: dataCustomers, refetch } = useCustomerQuery()
 
-  const [grouping, setGrouping] = React.useState<Grouping[]>()
+  const [groupedCustomer, setGroupedCustomer] = React.useState<IGroupedCostumers[]>()
   const { createCustomer, updateCustomer, deleteCustomer } = useCustomerMutation()
 
   const [openModalFormCS, setOpenModalFormCS] = React.useState(false)
@@ -51,7 +51,7 @@ const Customer: React.FC = () => {
   })
 
   React.useEffect(() => {
-    const output = dataCustomers?.customers.reduce<any>((groups, contact) => {
+    const groupedCostumer = dataCustomers?.customers.reduce<{ [key: string]: Customer[] }>((groups, contact) => {
       const letter = contact.name.charAt(0)
 
       groups[letter] = groups[letter] || []
@@ -59,8 +59,8 @@ const Customer: React.FC = () => {
 
       return groups
     }, {})
-    if (output) {
-      setGrouping(Object.keys(output).map((key) => ({ key, contacts: output[key] })))
+    if (groupedCostumer) {
+      setGroupedCustomer(Object.keys(groupedCostumer).map((key) => ({ key, contacts: groupedCostumer[key] })))
     }
   }, [dataCustomers])
 
@@ -98,6 +98,7 @@ const Customer: React.FC = () => {
     })
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleDeleteCustomer = (id: string) => {
     confirm({
       title: "Do you Want to delete these record?",
@@ -145,7 +146,7 @@ const Customer: React.FC = () => {
                 <Option value="Yiminghe">yiminghe</Option>
               </Select>
             </div>
-            {Array.from(grouping || []).map((item) => {
+            {Array.from(groupedCustomer || []).map((item) => {
               const contacts = item.contacts
 
               return (
