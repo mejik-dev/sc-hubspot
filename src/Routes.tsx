@@ -1,3 +1,4 @@
+import AddOrUpdateCompany from "pages/customer/AddOrUpdateCompany"
 import Welcome from "pages/welcome"
 import React from "react"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
@@ -53,7 +54,19 @@ function RouterProvider(): JSX.Element {
         <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/customer">
           <DetailCustomer />
         </PrivateRoute>
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/customer">
+          <DetailCustomer />
+        </PrivateRoute>
         <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard">
+          <Customer />
+        </PrivateRoute>
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/add-company">
+          <AddOrUpdateCompany />
+        </PrivateRoute>
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/update-company">
+          <AddOrUpdateCompany />
+        </PrivateRoute>
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/:currentTab">
           <Customer />
         </PrivateRoute>
       </Switch>
