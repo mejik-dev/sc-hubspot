@@ -136,6 +136,13 @@ const Customer: React.FC = () => {
 
   return (
     <Layout className="layout-contact">
+      <Search
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+        className="input-search"
+        placeholder="Contacts"
+        style={{ padding: "0px 20px" }}
+      />
       <div className="btn-add">
         {activeTab === 1 ? (
           <Icon
@@ -163,13 +170,6 @@ const Customer: React.FC = () => {
           />
         )}
       </div>
-      <Search
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-        className="input-search"
-        placeholder="Contacts"
-        style={{ padding: "0px 20px" }}
-      />
       <Content className="container-content-dashboard">
         <Tabs activeKey={String(activeTab)} onChange={changeTabs} className="tab-list">
           <TabPane tab="Contacts" key="1">
@@ -191,29 +191,31 @@ const Customer: React.FC = () => {
                 <Option value="Yiminghe">yiminghe</Option>
               </Select>
             </div>
-            {Array.from(groupedCustomer || []).map((item) => {
-              return (
-                <List
-                  key={item.key}
-                  title={item.key}
-                  list={item.data}
-                  renderItem={(item) => item.name}
-                  onDelete={(item) => handleDeleteCustomer(item.id)}
-                  onEdit={(item) =>
-                    history.push({
-                      pathname: "/dashboard/update-customer",
-                      state: { mode: "update", data: item },
-                    })
-                  }
-                  onClickItem={(item) => {
-                    history.push({
-                      pathname: "/dashboard/customer/" + item.id,
-                      state: { customer: item },
-                    })
-                  }}
-                />
-              )
-            })}
+            <div style={{ overflow: "auto", height: "calc(100vh - 18%)", position: "relative" }}>
+              {Array.from(groupedCustomer || []).map((item) => {
+                return (
+                  <List
+                    key={item.key}
+                    title={item.key}
+                    list={item.data}
+                    renderItem={(item) => item.name}
+                    onDelete={(item) => handleDeleteCustomer(item.id)}
+                    onEdit={(item) =>
+                      history.push({
+                        pathname: "/dashboard/update-customer",
+                        state: { mode: "update", data: item },
+                      })
+                    }
+                    onClickItem={(item) => {
+                      history.push({
+                        pathname: "/dashboard/customer/" + item.id,
+                        state: { customer: item },
+                      })
+                    }}
+                  />
+                )
+              })}
+            </div>
           </TabPane>
           <TabPane tab="Company" key="2">
             {Array.from(groupedCompanies || []).map((item) => {
