@@ -1,5 +1,6 @@
-import { Form, Input, message } from "antd"
+import { Form, message } from "antd"
 import { PageHeader } from "antd"
+import CustomInputFloating from "components/CustomInputFloating"
 import { useCustomerMutation } from "hooks/customer"
 import * as React from "react"
 import { useHistory, useLocation } from "react-router-dom"
@@ -15,8 +16,19 @@ const formItemLayout = {
   },
 }
 
+interface IStateForm {
+  name: string
+  email: string
+  phoneNumber: string
+}
+
 const AddOrUpdateCustomer: React.FC = () => {
   const [loading, setLoading] = React.useState<boolean>(false)
+  const [values, setValues] = React.useState<IStateForm>({
+    name: "",
+    email: "",
+    phoneNumber: "",
+  })
 
   const history = useHistory()
   const location = useLocation<{ mode: string; data: Customer | undefined }>()
@@ -31,7 +43,6 @@ const AddOrUpdateCustomer: React.FC = () => {
     }
 
     setLoading(true)
-    delete values.prefix
 
     const { name, email, phoneNumber } = values
     const allFieldFilled = name && email && phoneNumber
@@ -74,21 +85,27 @@ const AddOrUpdateCustomer: React.FC = () => {
     history.goBack()
   }
 
-  let initialValues = {
+  const initialValues = {
     name: "",
     email: "",
     phoneNumber: "",
     prefix: "62",
   }
 
-  if (location.state && location.state.mode === "update" && location.state.data) {
-    const { name, email, phoneNumber } = location.state.data
-    initialValues = {
-      name,
-      email,
-      phoneNumber,
-      prefix: "62",
+  React.useEffect(() => {
+    if (location.state && location.state.mode === "update" && location.state.data) {
+      const { name, email, phoneNumber } = location.state.data
+      setValues({
+        name: name,
+        email: email,
+        phoneNumber: phoneNumber,
+      })
     }
+  }, [location.state])
+
+  const onChange = (e: React.SyntheticEvent): void => {
+    const target = e.target as HTMLInputElement
+    setValues({ ...values, [target.name]: target.value })
   }
 
   return (
@@ -97,7 +114,7 @@ const AddOrUpdateCustomer: React.FC = () => {
         title=""
         onBack={() => history.goBack()}
         extra={[
-          <div key="save" className="btn-save-modal" aria-hidden="true" onClick={() => onFinish(form.getFieldsValue())}>
+          <div key="save" className="btn-save-modal" aria-hidden="true" onClick={() => onFinish(values)}>
             {loading ? "Loading .." : "Save"}
           </div>,
         ]}
@@ -111,45 +128,33 @@ const AddOrUpdateCustomer: React.FC = () => {
         initialValues={initialValues}
         scrollToFirstError
       >
-        <Form.Item
-          name="name"
+        <CustomInputFloating
           label="Name"
-          tooltip="What do you want others to call you?"
-          rules={[{ required: true, message: "Please input your name!", whitespace: true }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
+          classNameValue="select-style"
+          name="name"
+          placeholder="Name"
+          value={values?.name}
+          onChange={onChange}
+          containerStyle={{ flexDirection: "column", alignItems: "start", justifyContent: "center" }}
+        />
+        <CustomInputFloating
+          label="Email"
+          classNameValue="select-style"
           name="email"
-          label="E-mail"
-          rules={[
-            {
-              type: "email",
-              message: "The input is not valid E-mail!",
-            },
-            {
-              required: true,
-              message: "Please input your E-mail!",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
+          value={values?.email}
+          placeholder="Email"
+          onChange={onChange}
+          containerStyle={{ flexDirection: "column", alignItems: "start", justifyContent: "center" }}
+        />
+        <CustomInputFloating
+          label="Phone"
+          classNameValue="select-style"
           name="phoneNumber"
-          label="Phone Number"
-          rules={[{ required: true, message: "Please input your phone number!" }]}
-        >
-          <Input
-            addonBefore={
-              <Form.Item name="prefix" noStyle>
-                +62
-              </Form.Item>
-            }
-            style={{ width: "100%" }}
-          />
-        </Form.Item>
+          value={values?.phoneNumber}
+          placeholder="Phone"
+          onChange={onChange}
+          containerStyle={{ flexDirection: "column", alignItems: "start", justifyContent: "center" }}
+        />
       </Form>
     </>
   )
