@@ -35,3 +35,24 @@
 
   color: rgba(0, 0, 0, 0.7);
 }
+
+.tag-value-email {
+  background: rgba(85, 152, 141, 0.2);
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  height: 34px;
+  border-radius: 20px;
+  padding: 5px 10px;
+}
+
+.input-email {
+  border: none;
+}
+
+.input-email:focus {
+  border: none;
+  border-color: transparent;
+  box-shadow: none;
+}
