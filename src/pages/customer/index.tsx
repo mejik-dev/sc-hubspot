@@ -191,7 +191,7 @@ const Customer: React.FC = () => {
                 <Option value="Yiminghe">yiminghe</Option>
               </Select>
             </div>
-            <div style={{ overflow: "auto", height: "calc(100vh - 18%)", position: "relative" }}>
+            <div style={{ overflow: "auto", height: "calc(100vh - 18%)" }}>
               {Array.from(groupedCustomer || []).map((item) => {
                 return (
                   <List
@@ -218,29 +218,31 @@ const Customer: React.FC = () => {
             </div>
           </TabPane>
           <TabPane tab="Company" key="2">
-            {Array.from(groupedCompanies || []).map((item) => {
-              return (
-                <List
-                  key={item.key}
-                  title={item.key}
-                  list={item.data}
-                  renderItem={(item) => item.name}
-                  onDelete={(item) => handleDeleteCompany(item.id)}
-                  onEdit={(item) =>
-                    history.push({
-                      pathname: "/dashboard/update-company",
-                      state: { mode: "update", data: item },
-                    })
-                  }
-                  onClickItem={(item) => {
-                    history.push({
-                      pathname: "/dashboard/company/" + item.id,
-                      state: { company: item },
-                    })
-                  }}
-                />
-              )
-            })}
+            <div style={{ overflow: "auto", height: "calc(100vh - 18%)" }}>
+              {Array.from(groupedCompanies || []).map((item) => {
+                return (
+                  <List
+                    key={item.key}
+                    title={item.key}
+                    list={item.data}
+                    renderItem={(item) => item.name}
+                    onDelete={(item) => handleDeleteCompany(item.id)}
+                    onEdit={(item) =>
+                      history.push({
+                        pathname: "/dashboard/update-company",
+                        state: { mode: "update", data: item },
+                      })
+                    }
+                    onClickItem={(item) => {
+                      history.push({
+                        pathname: "/dashboard/company/" + item.id,
+                        state: { company: item },
+                      })
+                    }}
+                  />
+                )
+              })}
+            </div>
           </TabPane>
         </Tabs>
       </Content>
