@@ -1,9 +1,10 @@
 import "styles/sendEmail.css"
 
-import { Input, PageHeader } from "antd"
+import { Input, message, PageHeader } from "antd"
 import CInputEmail from "components/send-email/CInputEmail"
+import { useActivityMutation } from "hooks/activity"
 import * as React from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 
 const { TextArea } = Input
 
@@ -17,12 +18,52 @@ interface FormValueSendEmail {
 
 const SendEmail: React.FC = () => {
   const history = useHistory()
+  const { state } = useLocation<{ customer: Customer }>()
+  const { sendEmail } = useActivityMutation()
 
-  const [values, setValues] = React.useState<FormValueSendEmail>()
+  const [loading, setLoading] = React.useState(false)
+  const [values, setValues] = React.useState<FormValueSendEmail>({
+    to: "",
+    cc: "",
+    from: "hello@microgen.id",
+    subject: "",
+    body: "",
+  })
+
+  React.useEffect(() => {
+    if (state.customer) {
+      setValues((prev) => ({ ...prev, to: state.customer.email }))
+    }
+  }, [state.customer])
 
   const onChange = (e: React.SyntheticEvent): void => {
     const target = e.target as HTMLInputElement
     setValues({ ...values, [target.name]: target.value })
+  }
+
+  const handleSendEmail = async () => {
+    setLoading(true)
+
+    if (!values.cc) {
+      delete values.cc
+    }
+
+    if (!values.to || !values.subject || !values.body || !values.from) {
+      setLoading(false)
+      message.warning("field must be filled")
+    } else {
+      await sendEmail({
+        variables: {
+          input: values,
+        },
+      })
+        .then((response) => {
+          message.success("Success sent mail")
+          setLoading(false)
+        })
+        .catch((error) => message.error(error))
+      setLoading(false)
+    }
   }
 
   return (
@@ -32,8 +73,8 @@ const SendEmail: React.FC = () => {
         title="Tracked Email"
         onBack={() => history.goBack()}
         extra={[
-          <div key="save" className="btn-save-modal" aria-hidden="true">
-            Send
+          <div key="save" className="btn-save-modal" onClick={handleSendEmail} aria-hidden="true">
+            {loading ? "loading.." : "Send"}
           </div>,
         ]}
       />

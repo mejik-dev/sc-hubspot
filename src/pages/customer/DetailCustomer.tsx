@@ -77,7 +77,15 @@ const DetailCustomer: React.FC = () => {
           <Text>Call</Text>
         </div>
         <div className="icon-actions">
-          <Icon component={Msg} onClick={() => console.log("click")} />
+          <Icon
+            component={Msg}
+            onClick={() =>
+              history.push({
+                pathname: "/dashboard/customer/send-email",
+                state: { customer: customer },
+              })
+            }
+          />
           <Text>Email</Text>
         </div>
         <div className="icon-actions">

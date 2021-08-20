@@ -1,4 +1,11 @@
-import { QueryHookOptions, QueryResult, useQuery } from "@apollo/react-hooks"
+import {
+  FetchResult,
+  MutationHookOptions,
+  QueryHookOptions,
+  QueryResult,
+  useMutation,
+  useQuery,
+} from "@apollo/react-hooks"
 import { gql } from "graphql-tag"
 
 const query = {
@@ -12,6 +19,17 @@ const query = {
       }
     }
   `,
+  sendEmail: gql`
+    mutation sendEmail($input: SendEmailInput) {
+      sendEmail(input: $input) {
+        message
+      }
+    }
+  `,
+}
+
+type ActivityMutation = {
+  sendEmail: (options: MutationHookOptions) => Promise<FetchResult<{ message: string }>>
 }
 
 interface ActivityResult {
@@ -33,4 +51,12 @@ const useActivityQuery = (options: QueryHookOptions<ActivityResult, ActivityHook
   return useQuery<ActivityResult, ActivityHookVariables>(query.getActivities, options)
 }
 
-export { useActivityQuery }
+const useActivityMutation = (): ActivityMutation => {
+  const [sendEmail] = useMutation<{ message: string }>(query.sendEmail)
+
+  return {
+    sendEmail,
+  }
+}
+
+export { useActivityMutation, useActivityQuery }
