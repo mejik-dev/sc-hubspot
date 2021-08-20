@@ -7,6 +7,8 @@ import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
 
 import { UserQuery } from "./hooks/user"
 import AddOrUpdateCustomer from "./pages/customer/AddOrUpdateCustomer"
+import DetailCustomer from "./pages/customer/detail-customer/index"
+import SendEmail from "./pages/customer/detail-customer/SendEmail"
 import Customer from "./pages/customer/index"
 import Login from "./pages/login/login"
 import Register from "./pages/register/Register"
@@ -46,11 +48,20 @@ function RouterProvider(): JSX.Element {
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
 
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/customer/send-email">
+          <SendEmail />
+        </PrivateRoute>
         <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/add-customer">
           <AddOrUpdateCustomer />
         </PrivateRoute>
         <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/update-customer">
           <AddOrUpdateCustomer />
+        </PrivateRoute>
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/customer">
+          <DetailCustomer />
+        </PrivateRoute>
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/customer">
+          <DetailCustomer />
         </PrivateRoute>
         <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/add-company">
           <AddOrUpdateCompany />
@@ -62,6 +73,9 @@ function RouterProvider(): JSX.Element {
           <DetailCustomer />
         </PrivateRoute>
         <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/:currentTab">
+          <Customer />
+        </PrivateRoute>
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard">
           <Customer />
         </PrivateRoute>
       </Switch>
