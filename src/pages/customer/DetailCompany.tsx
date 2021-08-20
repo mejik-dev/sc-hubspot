@@ -1,24 +1,26 @@
 import "styles/detailCustomer.css"
 
 import Icon from "@ant-design/icons"
-import { MoreOutlined } from "@ant-design/icons"
-import { PageHeader, Tabs, Typography } from "antd"
+import { ExclamationCircleOutlined, MoreOutlined } from "@ant-design/icons"
+import { Dropdown, Menu, Modal, PageHeader, Tabs, Typography } from "antd"
 import { Phone } from "assets/icons/actions/index"
 import Activity from "components/Activity"
 import BasicList from "components/detail-contact/BasicList"
 import SelectList from "components/detail-contact/SelectList"
 import { useActivityQuery } from "hooks/activity"
+import { useCompanyMutation } from "hooks/company"
 import React from "react"
 import { Redirect, useHistory, useLocation, useParams } from "react-router-dom"
 
 const { Text } = Typography
 const { TabPane } = Tabs
+const { confirm } = Modal
 
 const DetailCompany: React.FC = () => {
   const history = useHistory()
   const { companyId } = useParams<{ companyId: string }>()
   const { state } = useLocation<{ company: Company }>()
-  console.log(state)
+  const { deleteCompany } = useCompanyMutation()
 
   const { data, refetch, loading } = useActivityQuery({
     variables: {
@@ -35,6 +37,23 @@ const DetailCompany: React.FC = () => {
       },
     })
   }, [companyId, refetch])
+
+  const handleDeleteCompany = (id: string) => {
+    confirm({
+      title: "Do you Want to delete these record?",
+      icon: <ExclamationCircleOutlined />,
+      okType: "danger",
+      onOk() {
+        deleteCompany({
+          variables: {
+            id,
+          },
+        }).then(() => {
+          history.goBack()
+        })
+      },
+    })
+  }
 
   if (!state?.company) {
     return <Redirect to="/dashboard/contact" />
@@ -61,15 +80,25 @@ const DetailCompany: React.FC = () => {
     </div>
   )
 
+  const menu = (
+    <Menu>
+      <Menu.Item onClick={() => handleDeleteCompany(companyId)} key="0">
+        Delete
+      </Menu.Item>
+    </Menu>
+  )
+
   return (
     <div style={{ height: "100%", background: "#f1faf9" }}>
       <PageHeader
         title={TitleModal}
         onBack={() => history.goBack()}
         extra={[
-          <div key="save" className="btn-more">
-            <MoreOutlined />
-          </div>,
+          <Dropdown key="more" overlay={menu} trigger={["click"]} placement="bottomCenter">
+            <div key="save" className="btn-more">
+              <MoreOutlined />
+            </div>
+          </Dropdown>,
         ]}
         style={{ background: "#fff" }}
       />

@@ -1,18 +1,20 @@
 import "styles/detailCustomer.css"
 
 import Icon from "@ant-design/icons"
-import { MoreOutlined } from "@ant-design/icons"
-import { PageHeader, Tabs, Typography } from "antd"
+import { ExclamationCircleOutlined, MoreOutlined } from "@ant-design/icons"
+import { Dropdown, Menu, Modal, PageHeader, Tabs, Typography } from "antd"
 import { Chat, Msg, Phone } from "assets/icons/actions/index"
 import Activity from "components/Activity"
 import BasicList from "components/detail-contact/BasicList"
 import SelectList from "components/detail-contact/SelectList"
 import { useActivityQuery } from "hooks/activity"
+import { useCustomerMutation } from "hooks/customer"
 import React from "react"
 import { Redirect, useHistory, useLocation, useParams } from "react-router-dom"
 
 const { Text } = Typography
 const { TabPane } = Tabs
+const { confirm } = Modal
 
 const DetailCustomer: React.FC = () => {
   const history = useHistory()
@@ -27,6 +29,8 @@ const DetailCustomer: React.FC = () => {
     },
   })
 
+  const { deleteCustomer } = useCustomerMutation()
+
   React.useEffect(() => {
     refetch({
       filter: {
@@ -37,6 +41,23 @@ const DetailCustomer: React.FC = () => {
 
   if (!state?.customer) {
     return <Redirect to="/dashboard/contact" />
+  }
+
+  const handleDeleteCustomer = (id: string) => {
+    confirm({
+      title: "Do you Want to delete these record?",
+      icon: <ExclamationCircleOutlined />,
+      okType: "danger",
+      onOk() {
+        deleteCustomer({
+          variables: {
+            id,
+          },
+        }).then(() => {
+          history.goBack()
+        })
+      },
+    })
   }
 
   const { customer } = state
@@ -59,18 +80,29 @@ const DetailCustomer: React.FC = () => {
     </div>
   )
 
+  const menu = (
+    <Menu>
+      <Menu.Item onClick={() => handleDeleteCustomer(customerId)} key="0">
+        Delete
+      </Menu.Item>
+    </Menu>
+  )
+
   return (
     <div style={{ height: "100%", background: "#f1faf9" }}>
       <PageHeader
         title={TitleModal}
         onBack={() => history.goBack()}
         extra={[
-          <div key="save" className="btn-more">
-            <MoreOutlined />
-          </div>,
+          <Dropdown key="more" overlay={menu} trigger={["click"]} placement="bottomCenter">
+            <div key="save" className="btn-more">
+              <MoreOutlined />
+            </div>
+          </Dropdown>,
         ]}
         style={{ background: "#fff" }}
       />
+
       <div className="detail-action">
         <div className="icon-actions">
           <Icon component={Phone} onClick={() => console.log("click")} />
