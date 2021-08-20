@@ -1,4 +1,6 @@
+// TODO: fix eslint import sort
 import AddOrUpdateCompany from "pages/customer/AddOrUpdateCompany"
+import DetailCustomer from "pages/customer/DetailCustomer"
 import Welcome from "pages/welcome"
 import React from "react"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
@@ -55,6 +57,9 @@ function RouterProvider(): JSX.Element {
         </PrivateRoute>
         <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/update-company">
           <AddOrUpdateCompany />
+        </PrivateRoute>
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/customer/:customerId">
+          <DetailCustomer />
         </PrivateRoute>
         <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/:currentTab">
           <Customer />

@@ -34,6 +34,12 @@ interface Company {
   phoneNumber?: string
 }
 
+interface Activity {
+  id: string
+  title: string
+  desc?: string
+  createdAt: string
+}
 interface ValueFormCustomer {
   name: string
   phoneNumber: string

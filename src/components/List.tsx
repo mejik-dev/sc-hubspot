@@ -10,9 +10,10 @@ interface ListProps {
   onDelete: (item: any) => void
   onEdit: (item: any) => void
   renderItem: (item: any) => string | React.ReactNode
+  onClickItem: (item: any) => void
 }
 
-const ListComponet: React.FC<ListProps> = ({ title, list, onDelete, onEdit, renderItem }: ListProps) => {
+const ListComponet: React.FC<ListProps> = ({ title, list, onDelete, onEdit, renderItem, onClickItem }: ListProps) => {
   return (
     <>
       <List
@@ -22,9 +23,13 @@ const ListComponet: React.FC<ListProps> = ({ title, list, onDelete, onEdit, rend
         dataSource={list}
         renderItem={(item) => (
           <List.Item
+            onClick={() => onClickItem(item)}
             actions={[
               <Button
-                onClick={() => onEdit(item)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onEdit(item)
+                }}
                 key="list-loadmore-edit"
                 type="primary"
                 shape="circle"
@@ -34,7 +39,10 @@ const ListComponet: React.FC<ListProps> = ({ title, list, onDelete, onEdit, rend
                 type="primary"
                 shape="circle"
                 key="list-loadmore-more"
-                onClick={() => onDelete(item)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onDelete(item)
+                }}
                 danger
                 icon={<DeleteOutlined />}
               />,

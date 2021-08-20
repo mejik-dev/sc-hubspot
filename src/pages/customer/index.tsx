@@ -205,6 +205,12 @@ const Customer: React.FC = () => {
                       state: { mode: "update", data: item },
                     })
                   }
+                  onClickItem={(item) => {
+                    history.push({
+                      pathname: "/dashboard/customer/" + item.id,
+                      state: { customer: item },
+                    })
+                  }}
                 />
               )
             })}
@@ -224,6 +230,12 @@ const Customer: React.FC = () => {
                       state: { mode: "update", data: item },
                     })
                   }
+                  onClickItem={(item) => {
+                    history.push({
+                      pathname: "/dashboard/company/" + item.id,
+                      state: { customer: item },
+                    })
+                  }}
                 />
               )
             })}
