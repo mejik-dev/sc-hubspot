@@ -14,21 +14,23 @@ const query = {
   `,
 }
 
-// TODO: fix typing for variable ops
-// interface ActivityFilter extends Activity {
-//   customerId: string
-//   companyId: string
-// }
+interface ActivityResult {
+  activities: Activity[]
+}
 
-type ActivityQuery = QueryResult<
-  {
-    activities: Activity[]
-  },
-  Record<string, Activity>
->
+interface ActivityFilter extends Activity {
+  customerId: string
+  companyId: string
+}
 
-const useActivityQuery = (options: QueryHookOptions): ActivityQuery => {
-  return useQuery<{ activities: Activity[] }>(query.getActivities, options)
+interface ActivityHookVariables {
+  filter: Partial<ActivityFilter>
+}
+
+type ActivityQuery = QueryResult<ActivityResult, ActivityHookVariables>
+
+const useActivityQuery = (options: QueryHookOptions<ActivityResult, ActivityHookVariables>): ActivityQuery => {
+  return useQuery<ActivityResult, ActivityHookVariables>(query.getActivities, options)
 }
 
 export { useActivityQuery }

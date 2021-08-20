@@ -5,14 +5,15 @@ interface ActivityProps {
   title: string
   createdAt: string
   description?: string
+  style?: React.CSSProperties
 }
 
-const Activity: React.FC<ActivityProps> = ({ title, description, createdAt }: ActivityProps) => {
+const Activity: React.FC<ActivityProps> = ({ title, description, createdAt, style = {} }: ActivityProps) => {
   return (
-    <Card style={{ width: "100%" }}>
+    <Card style={style}>
       <p className="title-card">{title}</p>
       <Tag className="tag-card">{createdAt}</Tag>
-      <div>{description}</div>
+      <p className="subtitle-card">{description}</p>
     </Card>
   )
 }
