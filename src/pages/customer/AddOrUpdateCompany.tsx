@@ -27,6 +27,15 @@ const AddOrUpdateCompany: React.FC = () => {
 
   const [form] = Form.useForm()
 
+  React.useEffect(() => {
+    if (location.state && location.state.mode === "update" && location.state.data) {
+      const { name } = location.state.data
+      setValues({
+        name: name,
+      })
+    }
+  }, [location.state])
+
   const { createCompany, updateCompany } = useCompanyMutation()
 
   const onFinish = async (values: Partial<Company>) => {
