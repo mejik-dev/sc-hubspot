@@ -106,7 +106,15 @@ const DetailCustomer: React.FC = () => {
                     title={activity.title}
                     description={activity.desc}
                     createdAt={activity.createdAt}
-                    style={{ width: "100%", marginBottom: 10 }}
+                    style={{
+                      width: "100%",
+                      marginBottom: 10,
+                      display: "flex",
+                      alignItems: "flex-start",
+                      justifyContent: "center",
+                      flexDirection: "column",
+                      boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
+                    }}
                   />
                 ))}
           </div>
