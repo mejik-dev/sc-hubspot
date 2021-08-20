@@ -233,7 +233,7 @@ const Customer: React.FC = () => {
                   onClickItem={(item) => {
                     history.push({
                       pathname: "/dashboard/company/" + item.id,
-                      state: { customer: item },
+                      state: { company: item },
                     })
                   }}
                 />

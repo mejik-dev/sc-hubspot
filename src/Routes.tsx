@@ -1,16 +1,17 @@
 // TODO: fix eslint import sort
 import AddOrUpdateCompany from "pages/customer/AddOrUpdateCompany"
+import AddOrUpdateCustomer from "pages/customer/AddOrUpdateCustomer"
+import SendEmail from "pages/customer/detail-customer/SendEmail"
+import DetailCompany from "pages/customer/DetailCompany"
 import DetailCustomer from "pages/customer/DetailCustomer"
+import Customer from "pages/customer/index"
+import Login from "pages/login/login"
+import Register from "pages/register/Register"
 import Welcome from "pages/welcome"
 import React from "react"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
 
 import { UserQuery } from "./hooks/user"
-import AddOrUpdateCustomer from "./pages/customer/AddOrUpdateCustomer"
-import SendEmail from "./pages/customer/detail-customer/SendEmail"
-import Customer from "./pages/customer/index"
-import Login from "./pages/login/login"
-import Register from "./pages/register/Register"
 
 type IPrivateRoute = {
   path: string
@@ -64,6 +65,9 @@ function RouterProvider(): JSX.Element {
         </PrivateRoute>
         <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/customer/:customerId">
           <DetailCustomer />
+        </PrivateRoute>
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/company/:companyId">
+          <DetailCompany />
         </PrivateRoute>
         <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/:currentTab">
           <Customer />
