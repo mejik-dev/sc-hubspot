@@ -1,5 +1,6 @@
-import { Form, Input, message } from "antd"
+import { Form, message } from "antd"
 import { PageHeader } from "antd"
+import CustomInputFloating from "components/CustomInputFloating"
 import { useCompanyMutation } from "hooks/company"
 import * as React from "react"
 import { useHistory, useLocation } from "react-router-dom"
@@ -17,6 +18,9 @@ const formItemLayout = {
 
 const AddOrUpdateCompany: React.FC = () => {
   const [loading, setLoading] = React.useState<boolean>(false)
+  const [values, setValues] = React.useState({
+    name: "",
+  })
 
   const history = useHistory()
   const location = useLocation<{ mode: string; data: Company | undefined }>()
@@ -79,13 +83,18 @@ const AddOrUpdateCompany: React.FC = () => {
     }
   }
 
+  const onChange = (e: React.SyntheticEvent): void => {
+    const target = e.target as HTMLInputElement
+    setValues({ ...values, [target.name]: target.value })
+  }
+
   return (
     <>
       <PageHeader
         title=""
         onBack={() => history.goBack()}
         extra={[
-          <div key="save" className="btn-save-modal" aria-hidden="true" onClick={() => onFinish(form.getFieldsValue())}>
+          <div key="save" className="btn-save-modal" aria-hidden="true" onClick={() => onFinish(values)}>
             {loading ? "Loading .." : "Save"}
           </div>,
         ]}
@@ -99,14 +108,15 @@ const AddOrUpdateCompany: React.FC = () => {
         initialValues={initialValues}
         scrollToFirstError
       >
-        <Form.Item
-          name="name"
+        <CustomInputFloating
           label="Company Name"
-          tooltip="What is your company name?"
-          rules={[{ required: true, message: "Please input your company name!", whitespace: true }]}
-        >
-          <Input />
-        </Form.Item>
+          classNameValue="select-style"
+          name="name"
+          placeholder="Company Name"
+          value={values.name}
+          onChange={onChange}
+          containerStyle={{ flexDirection: "column", alignItems: "start", justifyContent: "center" }}
+        />
       </Form>
     </>
   )
