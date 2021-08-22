@@ -1,3 +1,13 @@
+// TODO: fix eslint import sort
+import AddOrUpdateCompany from "pages/customer/AddOrUpdateCompany"
+import AddOrUpdateCustomer from "pages/customer/AddOrUpdateCustomer"
+import SendEmail from "pages/customer/detail-customer/SendEmail"
+import DetailCompany from "pages/customer/DetailCompany"
+import DetailCustomer from "pages/customer/DetailCustomer"
+import Customer from "pages/customer/index"
+import Login from "pages/login/login"
+import Register from "pages/register/Register"
+import Welcome from "pages/welcome"
 import React from "react"
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom"
 
@@ -23,9 +33,9 @@ const PrivateRoute = ({ path, autheticated, nonAuthenticatedRedirect, children }
 }
 
 function RouterProvider(): JSX.Element {
-  const { data, loading } = UserQuery()
+  const { loading, data } = UserQuery()
 
-  const authenticated = Boolean(data?.user)
+  const authenticated = Boolean(data?.user?.id)
 
   if (loading) {
     return <b>loading</b>
@@ -34,11 +44,36 @@ function RouterProvider(): JSX.Element {
   return (
     <BrowserRouter>
       <Switch>
-        <Route exact path="/public">
-          <div>Public</div>
-        </Route>
-        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/public" path="/">
-          <div>autheticated user page</div>
+        <Route exact path="/" component={Welcome} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/register" component={Register} />
+
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/customer/send-email">
+          <SendEmail />
+        </PrivateRoute>
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/add-customer">
+          <AddOrUpdateCustomer />
+        </PrivateRoute>
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/update-customer">
+          <AddOrUpdateCustomer />
+        </PrivateRoute>
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/add-company">
+          <AddOrUpdateCompany />
+        </PrivateRoute>
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/update-company">
+          <AddOrUpdateCompany />
+        </PrivateRoute>
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/customer/:customerId">
+          <DetailCustomer />
+        </PrivateRoute>
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/company/:companyId">
+          <DetailCompany />
+        </PrivateRoute>
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/:currentTab">
+          <Customer />
+        </PrivateRoute>
+        <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard">
+          <Customer />
         </PrivateRoute>
       </Switch>
     </BrowserRouter>

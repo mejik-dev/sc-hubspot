@@ -8,7 +8,6 @@ const query = {
         firstName
         lastName
         role
-        avatar
       }
     }
   `,
