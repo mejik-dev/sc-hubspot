@@ -124,7 +124,7 @@ const AddOrUpdateCustomer: React.FC = () => {
         {...formItemLayout}
         form={form}
         name="register"
-        onFinish={onFinish}
+        onFinish={() => onFinish(values)}
         initialValues={initialValues}
         scrollToFirstError
       >

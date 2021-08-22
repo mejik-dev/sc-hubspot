@@ -113,7 +113,7 @@ const AddOrUpdateCompany: React.FC = () => {
         {...formItemLayout}
         form={form}
         name="createOrUpdateCompany"
-        onFinish={onFinish}
+        onFinish={() => onFinish(values)}
         initialValues={initialValues}
         scrollToFirstError
       >

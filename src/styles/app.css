@@ -17,3 +17,8 @@ body, html {
   height: 100vh;
   min-height: calc(100vh - 60px);
 }
+
+.btn-save-modal {
+  cursor: pointer;
+  color: #55988D
+}
