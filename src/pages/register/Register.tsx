@@ -6,14 +6,12 @@ import { Logo } from "assets/icons"
 import { useRegister } from "hooks/auth"
 import { setCookie } from "nookies"
 import * as React from "react"
-import { useHistory } from "react-router-dom"
 
 const { Link, Text } = Typography
 const { Header, Footer, Content } = Layout
 
 const Register: React.FC = () => {
   const register = useRegister()
-  const history = useHistory()
 
   const [values, setValues] = React.useState({
     email: "",
@@ -22,13 +20,16 @@ const Register: React.FC = () => {
     lastName: "",
   })
 
-  const disabled = !values.email || !values.firstName || !values.password || !values.lastName
+  const [loading, setLoading] = React.useState(false)
+
+  const disabled = !values.email || !values.firstName || !values.password || !values.lastName || loading
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValues((previous) => ({ ...previous, [e.target.name]: e.target.value }))
   }
 
   const handleRegister = (values: React.FormEvent) => {
+    setLoading(true)
     register({
       variables: {
         input: values,
@@ -36,15 +37,15 @@ const Register: React.FC = () => {
     })
       .then((response) => {
         const token: string = response.data?.register?.token as string
-        console.log(response)
         setCookie(null, "token", token, {
           maxAge: 30 * 24 * 60 * 60,
           path: "/",
         })
 
         if (token) {
-          history.push("/")
+          window.location.replace("/dashboard")
         }
+        setLoading(false)
       })
       .catch((err) => {
         if (JSON.stringify(err).includes("has been used")) {
@@ -52,6 +53,7 @@ const Register: React.FC = () => {
         } else {
           alert(err)
         }
+        setLoading(false)
       })
   }
 
@@ -111,7 +113,7 @@ const Register: React.FC = () => {
           </Form.Item>
           <Form.Item>
             <Button disabled={disabled} htmlType="submit" type="primary" className="button-primary-register">
-              Login
+              {loading ? "Registering ..." : "Register"}
             </Button>
           </Form.Item>
         </Form>

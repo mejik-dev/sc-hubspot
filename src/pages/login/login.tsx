@@ -6,27 +6,28 @@ import { Logo } from "assets/icons"
 import { useLogin } from "hooks/auth"
 import { setCookie } from "nookies"
 import * as React from "react"
-import { useHistory } from "react-router-dom"
 
 const { Link, Text } = Typography
 const { Header, Footer, Content } = Layout
 
 const Login: React.FC = () => {
   const login = useLogin()
-  const history = useHistory()
 
   const [value, setValue] = React.useState({
     email: "",
     password: "",
   })
 
-  const disabled = !value.email || !value.password
+  const [loading, setLoading] = React.useState(false)
+
+  const disabled = !value.email || !value.password || loading
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue((previous) => ({ ...previous, [e.target.name]: e.target.value }))
   }
 
   const handleLogin = (values: React.FormEvent) => {
+    setLoading(true)
     login({
       variables: {
         input: values,
@@ -40,14 +41,12 @@ const Login: React.FC = () => {
           path: "/",
         })
 
-        setTimeout(() => {
-          if (token) {
-            history.push("/dashboard")
-          }
-        }, 2000)
+        window.location.replace("/dashboard")
+        setLoading(false)
       })
       .catch(() => {
         alert("Invalid Login")
+        setLoading(false)
       })
   }
 
@@ -81,7 +80,7 @@ const Login: React.FC = () => {
           </Form.Item>
           <Form.Item>
             <Button disabled={disabled} htmlType="submit" className="button-primary-register">
-              Login
+              {loading ? "Login..." : "Login"}
             </Button>
           </Form.Item>
         </Form>
