@@ -52,16 +52,21 @@ const SendEmail: React.FC = () => {
       setLoading(false)
       message.warning("field must be filled")
     } else {
-      await sendEmail({
-        variables: {
-          input: values,
-        },
-      })
-        .then((response) => {
-          message.success("Success sent mail")
-          setLoading(false)
+      delete values.cc
+
+      try {
+        await sendEmail({
+          variables: {
+            input: values,
+          },
         })
-        .catch((error) => message.error(error))
+
+        message.success("Success sent mail")
+        history.goBack()
+      } catch (e) {
+        message.error(e.message)
+      }
+
       setLoading(false)
     }
   }
@@ -79,7 +84,7 @@ const SendEmail: React.FC = () => {
         ]}
       />
       <CInputEmail label="To" value={values?.to} classNameValue="select-style" name="to" onChange={onChange} />
-      <CInputEmail label="Cc/Bcc" value={values?.cc} classNameValue="select-style" name="cc" onChange={onChange} />
+      {/* <CInputEmail label="Cc/Bcc" value={values?.cc} classNameValue="select-style" name="cc" onChange={onChange} /> */}
       <CInputEmail label="From" value={values?.from} classNameValue="select-style" name="from" onChange={onChange} />
 
       {/* <SelectEmail label="From" value="radiegtya@gmail.com" classNameValue="select-style" /> */}
