@@ -24,13 +24,26 @@ interface BaseData {
   name: string
 }
 
-const Customer: React.FC = () => {
+interface CustomerProps {
+  user?: User
+}
+
+const defaultUser = {
+  id: "",
+  email: "Anonymouse@gmail.com",
+  firstName: "anonymouse",
+}
+
+const Customer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
   const history = useHistory()
   const { currentTab } = useParams<{ currentTab: string }>()
 
   const { data: dataCustomers, refetch: refetchDataQustomers } = useCustomerQuery({
     variables: {
       sort: "name_ASC",
+      filter: {
+        createdById: user?.id,
+      },
     },
   })
   const { deleteCustomer } = useCustomerMutation()
@@ -38,6 +51,9 @@ const Customer: React.FC = () => {
   const { data: companies, refetch: refetchDataCompanies } = useCompanyQuery({
     variables: {
       sort: "name_ASC",
+      filter: {
+        createdById: user.id,
+      },
     },
   })
   const { deleteCompany } = useCompanyMutation()
@@ -65,8 +81,11 @@ const Customer: React.FC = () => {
         const newData = Object.keys(groupedCustomer).map((key) => ({ key, data: groupedCustomer[key] }))
         setGroupedCustomer(newData)
       }
+      return
     }
-  }, [dataCustomers])
+
+    setGroupedCustomer([])
+  }, [dataCustomers?.customers])
 
   React.useEffect(() => {
     if (companies?.companies.length) {
@@ -75,8 +94,11 @@ const Customer: React.FC = () => {
         const newData = Object.keys(groupedCompanies).map((key) => ({ key, data: groupedCompanies[key] }))
         setGroupedCompanies(newData)
       }
+      return
     }
-  }, [companies])
+
+    setGroupedCompanies([])
+  }, [companies?.companies])
 
   React.useEffect(() => {
     if (history.action === "POP") {
@@ -107,12 +129,18 @@ const Customer: React.FC = () => {
   const handleChangeSortCustomer = (value: string) => {
     refetchDataQustomers({
       sort: value + "_ASC",
+      filter: {
+        createdById: user.id,
+      },
     })
   }
 
   const handleChangeSortCompany = (value: string) => {
     refetchDataCompanies({
       sort: value + "_ASC",
+      filter: {
+        createdById: user.id,
+      },
     })
   }
 

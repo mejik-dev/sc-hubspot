@@ -59,8 +59,12 @@ interface CompanyResult {
   companies: Company[]
 }
 
+interface CompanyFilter extends Company {
+  createdById: string
+}
+
 interface CompanyQueryVariables {
-  filter?: Partial<Company>
+  filter?: Partial<CompanyFilter>
   sort?: string
 }
 

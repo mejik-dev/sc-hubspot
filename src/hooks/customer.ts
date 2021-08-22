@@ -59,8 +59,12 @@ interface CustomerResult {
   customers: Customer[]
 }
 
+interface CustomerFilter extends Customer {
+  createdById: string
+}
+
 interface CustomerQueryVariable {
-  filter?: Partial<Customer>
+  filter?: Partial<CustomerFilter>
   sort?: string
 }
 
