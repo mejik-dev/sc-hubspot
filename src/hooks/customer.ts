@@ -1,14 +1,22 @@
-import { FetchResult, MutationHookOptions, QueryResult, useMutation, useQuery } from "@apollo/react-hooks"
+import {
+  FetchResult,
+  MutationHookOptions,
+  QueryHookOptions,
+  QueryResult,
+  useMutation,
+  useQuery,
+} from "@apollo/react-hooks"
 import { gql } from "graphql-tag"
 
 const query = {
   getCustomer: gql`
-    query {
-      customers(orderBy: name_ASC) {
+    query ($filter: CustomerFilter, $sort: CustomerOrderBy) {
+      customers(where: $filter, orderBy: $sort) {
         id
         name
         email
         phoneNumber
+        createdAt
       }
     }
   `,
@@ -19,6 +27,7 @@ const query = {
         name
         email
         phoneNumber
+        createdAt
       }
     }
   `,
@@ -29,6 +38,7 @@ const query = {
         name
         email
         phoneNumber
+        createdAt
       }
     }
   `,
@@ -39,17 +49,26 @@ const query = {
         name
         email
         phoneNumber
+        createdAt
       }
     }
   `,
 }
 
-type CustomerQuery = QueryResult<
-  {
-    customers: Customer[]
-  },
-  Record<string, Customer>
->
+interface CustomerResult {
+  customers: Customer[]
+}
+
+interface CustomerFilter extends Customer {
+  createdById: string
+}
+
+interface CustomerQueryVariable {
+  filter?: Partial<CustomerFilter>
+  sort?: string
+}
+
+type CustomerQuery = QueryResult<CustomerResult, CustomerQueryVariable>
 
 type CustomerMutation = {
   createCustomer: (options: MutationHookOptions) => Promise<FetchResult<{ createCustomer: Customer }>>
@@ -57,8 +76,8 @@ type CustomerMutation = {
   deleteCustomer: (options: MutationHookOptions) => Promise<FetchResult<{ deleteCustomer: Customer }>>
 }
 
-const useCustomerQuery = (): CustomerQuery => {
-  return useQuery<{ customers: Customer[] }>(query.getCustomer)
+const useCustomerQuery = (options?: QueryHookOptions<CustomerResult, CustomerQueryVariable>): CustomerQuery => {
+  return useQuery(query.getCustomer, options)
 }
 
 const useCustomerMutation = (): CustomerMutation => {

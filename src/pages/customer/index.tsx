@@ -24,14 +24,38 @@ interface BaseData {
   name: string
 }
 
-const Customer: React.FC = () => {
+interface CustomerProps {
+  user?: User
+}
+
+const defaultUser = {
+  id: "",
+  email: "Anonymouse@gmail.com",
+  firstName: "anonymouse",
+}
+
+const Customer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
   const history = useHistory()
   const { currentTab } = useParams<{ currentTab: string }>()
 
-  const { data: dataCustomers, refetch: refetchDataQustomers } = useCustomerQuery()
+  const { data: dataCustomers, refetch: refetchDataQustomers } = useCustomerQuery({
+    variables: {
+      sort: "name_ASC",
+      filter: {
+        createdById: user?.id,
+      },
+    },
+  })
   const { deleteCustomer } = useCustomerMutation()
 
-  const { data: companies, refetch: refetchDataCompanies } = useCompanyQuery()
+  const { data: companies, refetch: refetchDataCompanies } = useCompanyQuery({
+    variables: {
+      sort: "name_ASC",
+      filter: {
+        createdById: user.id,
+      },
+    },
+  })
   const { deleteCompany } = useCompanyMutation()
 
   const [groupedCustomer, setGroupedCustomer] = React.useState<IGroupedData<Customer[]>[]>()
@@ -57,8 +81,11 @@ const Customer: React.FC = () => {
         const newData = Object.keys(groupedCustomer).map((key) => ({ key, data: groupedCustomer[key] }))
         setGroupedCustomer(newData)
       }
+      return
     }
-  }, [dataCustomers])
+
+    setGroupedCustomer([])
+  }, [dataCustomers?.customers])
 
   React.useEffect(() => {
     if (companies?.companies.length) {
@@ -67,8 +94,11 @@ const Customer: React.FC = () => {
         const newData = Object.keys(groupedCompanies).map((key) => ({ key, data: groupedCompanies[key] }))
         setGroupedCompanies(newData)
       }
+      return
     }
-  }, [companies])
+
+    setGroupedCompanies([])
+  }, [companies?.companies])
 
   React.useEffect(() => {
     if (history.action === "POP") {
@@ -96,8 +126,22 @@ const Customer: React.FC = () => {
     }
   }
 
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`)
+  const handleChangeSortCustomer = (value: string) => {
+    refetchDataQustomers({
+      sort: value + "_ASC",
+      filter: {
+        createdById: user.id,
+      },
+    })
+  }
+
+  const handleChangeSortCompany = (value: string) => {
+    refetchDataCompanies({
+      sort: value + "_ASC",
+      filter: {
+        createdById: user.id,
+      },
+    })
   }
 
   const handleDeleteCustomer = (id: string) => {
@@ -174,21 +218,13 @@ const Customer: React.FC = () => {
         <Tabs activeKey={String(activeTab)} onChange={changeTabs} className="tab-list">
           <TabPane tab="Contacts" key="1">
             <div className="wrapper-select">
-              <Select defaultValue="lucy" className="input-select" onChange={handleChange}>
-                <Option value="jack">Jack</Option>
-                <Option value="lucy">Lucy</Option>
-                <Option value="disabled" disabled>
-                  Disabled
-                </Option>
-                <Option value="Yiminghe">yiminghe</Option>
+              <Select defaultValue="allContact" className="input-select">
+                <Option value="allContact">All contacts {dataCustomers?.customers.length || 0}</Option>
               </Select>
-              <Select defaultValue="lucy" className="input-select" onChange={handleChange}>
-                <Option value="jack">Jack</Option>
-                <Option value="lucy">Lucy</Option>
-                <Option value="disabled" disabled>
-                  Disabled
-                </Option>
-                <Option value="Yiminghe">yiminghe</Option>
+              <Select defaultValue="name" className="input-select" onChange={handleChangeSortCustomer}>
+                <Option value="name">Name</Option>
+                <Option value="createdAt">Created at</Option>
+                {/* <Option value="Yiminghe">yiminghe</Option> */}
               </Select>
             </div>
             <div style={{ overflow: "auto", height: "calc(100vh - 18%)" }}>
@@ -218,6 +254,16 @@ const Customer: React.FC = () => {
             </div>
           </TabPane>
           <TabPane tab="Company" key="2">
+            <div className="wrapper-select">
+              <Select defaultValue="allCompany" className="input-select">
+                <Option value="allCompany">All company {companies?.companies.length || 0}</Option>
+              </Select>
+              <Select defaultValue="name" className="input-select" onChange={handleChangeSortCompany}>
+                <Option value="name">Name</Option>
+                <Option value="createdAt">Created at</Option>
+                {/* <Option value="Yiminghe">yiminghe</Option> */}
+              </Select>
+            </div>
             <div style={{ overflow: "auto", height: "calc(100vh - 18%)" }}>
               {Array.from(groupedCompanies || []).map((item) => {
                 return (

@@ -70,10 +70,10 @@ function RouterProvider(): JSX.Element {
           <DetailCompany />
         </PrivateRoute>
         <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/:currentTab">
-          <Customer />
+          <Customer user={data?.user} />
         </PrivateRoute>
         <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard">
-          <Customer />
+          <Customer user={data?.user} />
         </PrivateRoute>
       </Switch>
     </BrowserRouter>

@@ -46,8 +46,8 @@
 .input-select {
   border: 1px solid #55988d !important;
   border-radius: 20px !important;
-  width: 100px;
-  max-width: 183px;
+  /* width: 100px; */
+  /* max-width: 183px; */
 }
 
 .input-select .ant-select-selector {

@@ -1,14 +1,22 @@
-import { FetchResult, MutationHookOptions, QueryResult, useMutation, useQuery } from "@apollo/react-hooks"
+import {
+  FetchResult,
+  MutationHookOptions,
+  QueryHookOptions,
+  QueryResult,
+  useMutation,
+  useQuery,
+} from "@apollo/react-hooks"
 import { gql } from "graphql-tag"
 
 const query = {
   getCompany: gql`
-    query getCompanies {
-      companies {
+    query getCompanies($filter: CompanyFilter, $sort: CompanyOrderBy) {
+      companies(where: $filter, orderBy: $sort) {
         id
         name
         address
         phoneNumber
+        createdAt
       }
     }
   `,
@@ -19,6 +27,7 @@ const query = {
         name
         address
         phoneNumber
+        createdAt
       }
     }
   `,
@@ -29,6 +38,7 @@ const query = {
         name
         address
         phoneNumber
+        createdAt
       }
     }
   `,
@@ -39,17 +49,26 @@ const query = {
         name
         address
         phoneNumber
+        createdAt
       }
     }
   `,
 }
 
-type CompanyQuery = QueryResult<
-  {
-    companies: Company[]
-  },
-  Record<string, Company>
->
+interface CompanyResult {
+  companies: Company[]
+}
+
+interface CompanyFilter extends Company {
+  createdById: string
+}
+
+interface CompanyQueryVariables {
+  filter?: Partial<CompanyFilter>
+  sort?: string
+}
+
+type CompanyQuery = QueryResult<CompanyResult, CompanyQueryVariables>
 
 type CompanyMutation = {
   createCompany: (options: MutationHookOptions) => Promise<FetchResult<{ createCompany: Company }>>
@@ -57,8 +76,8 @@ type CompanyMutation = {
   deleteCompany: (options: MutationHookOptions) => Promise<FetchResult<{ deleteCompany: Company }>>
 }
 
-const useCompanyQuery = (): CompanyQuery => {
-  return useQuery<{ companies: Company[] }>(query.getCompany)
+const useCompanyQuery = (options?: QueryHookOptions<CompanyResult, CompanyQueryVariables>): CompanyQuery => {
+  return useQuery(query.getCompany, options)
 }
 
 const useCompanyMutation = (): CompanyMutation => {
