@@ -243,37 +243,39 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
           </div>
         </TabPane>
         <TabPane tab="Association" key="2">
-          <div style={{ padding: "3px 20px" }}>
-            <Typography>Customers</Typography>
+          <div style={{ overflowY: "auto", height: "calc(100vh - 30%)" }}>
+            <div style={{ padding: "3px 20px" }}>
+              <Typography>Customers</Typography>
+            </div>
+            <List
+              bordered
+              size="large"
+              dataSource={dataCustomers?.customers[0]?.companies || []}
+              renderItem={(item) => (
+                <List.Item
+                  style={{ background: "#FFF" }}
+                  actions={[
+                    <Button
+                      onClick={() => handleDeleteAssociation(item.id)}
+                      style={{ border: "none" }}
+                      key="list-loadmore-edit"
+                      shape="circle"
+                      icon={<CloseOutlined />}
+                    />,
+                  ]}
+                >
+                  <Typography>{item.name}</Typography>
+                </List.Item>
+              )}
+            />
+            <CInputAdd
+              option={dataCompany?.companies}
+              placeholder="Add contact"
+              value={selectedCustomer}
+              onChange={(e) => setSelectedCustomer(e)}
+              onAdd={handleAddAssociation}
+            />
           </div>
-          <List
-            bordered
-            size="large"
-            dataSource={dataCustomers?.customers[0]?.companies || []}
-            renderItem={(item) => (
-              <List.Item
-                style={{ background: "#FFF" }}
-                actions={[
-                  <Button
-                    onClick={() => handleDeleteAssociation(item.id)}
-                    style={{ border: "none" }}
-                    key="list-loadmore-edit"
-                    shape="circle"
-                    icon={<CloseOutlined />}
-                  />,
-                ]}
-              >
-                <Typography>{item.name}</Typography>
-              </List.Item>
-            )}
-          />
-          <CInputAdd
-            option={dataCompany?.companies}
-            placeholder="Add contact"
-            value={selectedCustomer}
-            onChange={(e) => setSelectedCustomer(e)}
-            onAdd={handleAddAssociation}
-          />
         </TabPane>
         <TabPane tab="About" key="3">
           <div style={{ padding: 20, marginTop: 10 }}>
