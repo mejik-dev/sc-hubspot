@@ -105,23 +105,30 @@ const DetailCustomer: React.FC = () => {
 
       <div className="detail-action">
         <div className="icon-actions">
-          <Icon component={Phone} onClick={() => console.log("click")} />
+          <a href={`tel:${customer.phoneNumber}`}>
+            <Icon component={Phone} onClick={() => console.log("click")} />
+          </a>
           <Text>Call</Text>
         </div>
         <div className="icon-actions">
-          <Icon
-            component={Msg}
-            onClick={() =>
-              history.push({
-                pathname: "/dashboard/customer/send-email",
-                state: { customer: customer },
-              })
-            }
-          />
+          <a href="/dashboard/customer/send-email" onClick={(e) => e.preventDefault()}>
+            <Icon
+              component={Msg}
+              onClick={() =>
+                history.push({
+                  pathname: "/dashboard/customer/send-email",
+                  state: { customer: customer },
+                })
+              }
+            />
+          </a>
+
           <Text>Email</Text>
         </div>
         <div className="icon-actions">
-          <Icon component={Chat} onClick={() => console.log("click")} />
+          <a href={`sms:${customer.phoneNumber}`}>
+            <Icon component={Chat} onClick={() => console.log("click")} />
+          </a>
           <Text>Text</Text>
         </div>
       </div>

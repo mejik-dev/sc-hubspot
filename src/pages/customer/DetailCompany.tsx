@@ -104,7 +104,9 @@ const DetailCompany: React.FC = () => {
       />
       <div className="detail-action">
         <div className="icon-actions">
-          <Icon component={Phone} onClick={() => console.log("click")} />
+          <a href={`tel:${company.phoneNumber}`}>
+            <Icon component={Phone} onClick={() => console.log("click")} />
+          </a>
           <Text>Call</Text>
         </div>
       </div>
