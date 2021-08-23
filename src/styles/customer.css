@@ -57,12 +57,12 @@
   max-width: 183px;
 }
 
-.ant-select-focused .ant-select-selector,
+.input-select .ant-select-focused .ant-select-selector,
 .ant-select-selector:focus,
 .ant-select-selector:active,
 .ant-select-open .ant-select-selector {
-  border: 1px solid #55988d !important;
-  border-radius: 20px !important;
+  border: 1px solid #55988d;
+  border-radius: 20px;
   max-width: 183px;
 }
 

@@ -9,7 +9,7 @@ import {
 import { gql } from "graphql-tag"
 
 const query = {
-  getCompany: gql`
+  getCompanies: gql`
     query getCompanies($filter: CompanyFilter, $sort: CompanyOrderBy) {
       companies(where: $filter, orderBy: $sort) {
         id
@@ -17,6 +17,10 @@ const query = {
         address
         phoneNumber
         createdAt
+        customers {
+          id
+          name
+        }
       }
     }
   `,
@@ -77,7 +81,7 @@ type CompanyMutation = {
 }
 
 const useCompanyQuery = (options?: QueryHookOptions<CompanyResult, CompanyQueryVariables>): CompanyQuery => {
-  return useQuery(query.getCompany, options)
+  return useQuery(query.getCompanies, options)
 }
 
 const useCompanyMutation = (): CompanyMutation => {

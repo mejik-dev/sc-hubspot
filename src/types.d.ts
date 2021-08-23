@@ -32,6 +32,10 @@ interface Company {
   name: string
   address?: string
   phoneNumber?: string
+  customers: {
+    id: string
+    name: string
+  }[]
 }
 
 interface Activity {

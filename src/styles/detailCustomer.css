@@ -111,6 +111,15 @@
   border: none !important;
 }
 
+.selected-customer .ant-select-focused .ant-select-selector,
+.ant-select-selector:focus,
+.ant-select-selector:active,
+.ant-select-open .ant-select-selector {
+  max-width: 100%;
+  border: none !important;
+  border-color: none;
+}
+
 /* .select-style .ant-select-selector {
   border: 1px solid #55988d !important;
   border-radius: 20px !important;
