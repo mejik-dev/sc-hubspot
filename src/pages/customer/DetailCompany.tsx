@@ -89,6 +89,7 @@ const DetailCompany = ({ user = defaultUser }: CustomerProps): JSX.Element => {
     })
       .then((response) => {
         refetchDataCompanies()
+        refetch()
         setSelectedCustomer("")
       })
       .catch((err) => {
@@ -114,6 +115,7 @@ const DetailCompany = ({ user = defaultUser }: CustomerProps): JSX.Element => {
         })
           .then((response) => {
             refetchDataCompanies()
+            refetch()
             setSelectedCustomer("")
           })
           .catch((err) => {
