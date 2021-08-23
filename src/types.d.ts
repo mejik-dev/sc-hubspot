@@ -25,6 +25,10 @@ interface Customer {
   email: string
   name: string
   phoneNumber: string
+  companies?: {
+    id: string
+    name: string
+  }[]
 }
 
 interface Company {

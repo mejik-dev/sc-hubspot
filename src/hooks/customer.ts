@@ -17,6 +17,10 @@ const query = {
         email
         phoneNumber
         createdAt
+        companies {
+          id
+          name
+        }
       }
     }
   `,

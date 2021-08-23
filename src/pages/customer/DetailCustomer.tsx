@@ -1,14 +1,16 @@
 import "styles/detailCustomer.css"
 
 import Icon from "@ant-design/icons"
-import { ExclamationCircleOutlined, MoreOutlined } from "@ant-design/icons"
-import { Dropdown, Menu, Modal, PageHeader, Tabs, Typography } from "antd"
+import { CloseOutlined, ExclamationCircleOutlined, MoreOutlined } from "@ant-design/icons"
+import { Button, Dropdown, List, Menu, Modal, PageHeader, Tabs, Typography } from "antd"
 import { Chat, Msg, Phone } from "assets/icons/actions/index"
 import Activity from "components/Activity"
+import CInputAdd from "components/CustomInputAdd"
 import BasicList from "components/detail-contact/BasicList"
 import SelectList from "components/detail-contact/SelectList"
 import { useActivityQuery } from "hooks/activity"
-import { useCustomerMutation } from "hooks/customer"
+import { useCompanyQuery } from "hooks/company"
+import { useCustomerMutation, useCustomerQuery } from "hooks/customer"
 import React from "react"
 import { Redirect, useHistory, useLocation, useParams } from "react-router-dom"
 
@@ -16,10 +18,40 @@ const { Text } = Typography
 const { TabPane } = Tabs
 const { confirm } = Modal
 
-const DetailCustomer: React.FC = () => {
+interface CustomerProps {
+  user?: User
+}
+
+const defaultUser = {
+  id: "",
+  email: "Anonymouse@gmail.com",
+  firstName: "anonymouse",
+}
+
+const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
+  const [selectedCustomer, setSelectedCustomer] = React.useState<string>()
+
   const history = useHistory()
   const { customerId } = useParams<{ customerId: string }>()
   const { state } = useLocation<{ customer: Customer }>()
+  const { customer } = state
+
+  const { data: dataCustomers, refetch: refetchDataQustomers } = useCustomerQuery({
+    variables: {
+      filter: {
+        id: customerId,
+      },
+    },
+  })
+
+  const { data: dataCompany } = useCompanyQuery({
+    variables: {
+      sort: "name_ASC",
+      filter: {
+        createdById: user.id,
+      },
+    },
+  })
 
   const { data, refetch, loading } = useActivityQuery({
     variables: {
@@ -29,7 +61,7 @@ const DetailCustomer: React.FC = () => {
     },
   })
 
-  const { deleteCustomer } = useCustomerMutation()
+  const { deleteCustomer, updateCustomer } = useCustomerMutation()
 
   React.useEffect(() => {
     refetch({
@@ -41,6 +73,60 @@ const DetailCustomer: React.FC = () => {
 
   if (!state?.customer) {
     return <Redirect to="/dashboard/contact" />
+  }
+
+  const handleAddAssociation = async () => {
+    const newCustomer = Array.from(dataCustomers?.customers[0].companies || [])
+
+    await updateCustomer({
+      variables: {
+        id: customerId,
+        input: {
+          companiesIds: [
+            ...newCustomer.map((item) => {
+              return item.id
+            }),
+            selectedCustomer,
+          ],
+        },
+      },
+    })
+      .then((response) => {
+        refetchDataQustomers()
+        refetch()
+        setSelectedCustomer("")
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  const handleDeleteAssociation = async (id: string) => {
+    const newCustomer = Array.from(dataCustomers?.customers[0].companies || [])
+
+    confirm({
+      title: "Do you want to remove these association?",
+      icon: <ExclamationCircleOutlined />,
+      okType: "danger",
+      async onOk() {
+        await updateCustomer({
+          variables: {
+            id: customerId,
+            input: {
+              companiesIds: [...newCustomer.filter((item) => item.id !== id).map((item) => item.id)],
+            },
+          },
+        })
+          .then((response) => {
+            refetchDataQustomers()
+            refetch()
+            setSelectedCustomer("")
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      },
+    })
   }
 
   const handleDeleteCustomer = (id: string) => {
@@ -59,8 +145,6 @@ const DetailCustomer: React.FC = () => {
       },
     })
   }
-
-  const { customer } = state
 
   const TitleModal = (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "start" }}>
@@ -158,7 +242,40 @@ const DetailCustomer: React.FC = () => {
                 ))}
           </div>
         </TabPane>
-        <TabPane tab="About" key="2">
+        <TabPane tab="Association" key="2">
+          <div style={{ padding: "3px 20px" }}>
+            <Typography>Customers</Typography>
+          </div>
+          <List
+            bordered
+            size="large"
+            dataSource={dataCustomers?.customers[0]?.companies || []}
+            renderItem={(item) => (
+              <List.Item
+                style={{ background: "#FFF" }}
+                actions={[
+                  <Button
+                    onClick={() => handleDeleteAssociation(item.id)}
+                    style={{ border: "none" }}
+                    key="list-loadmore-edit"
+                    shape="circle"
+                    icon={<CloseOutlined />}
+                  />,
+                ]}
+              >
+                <Typography>{item.name}</Typography>
+              </List.Item>
+            )}
+          />
+          <CInputAdd
+            option={dataCompany?.companies}
+            placeholder="Add contact"
+            value={selectedCustomer}
+            onChange={(e) => setSelectedCustomer(e)}
+            onAdd={handleAddAssociation}
+          />
+        </TabPane>
+        <TabPane tab="About" key="3">
           <div style={{ padding: 20, marginTop: 10 }}>
             <p style={{ marginBottom: 10 }}>About {customer.name}</p>
           </div>
