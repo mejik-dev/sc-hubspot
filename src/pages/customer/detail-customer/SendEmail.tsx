@@ -19,7 +19,7 @@ interface FormValueSendEmail {
 const SendEmail: React.FC = () => {
   const history = useHistory()
   const { state } = useLocation<{ customer: Customer }>()
-  const { sendEmail } = useActivityMutation()
+  const { sendEmail, createActivity } = useActivityMutation()
 
   const [loading, setLoading] = React.useState(false)
   const [values, setValues] = React.useState<FormValueSendEmail>({
@@ -59,6 +59,16 @@ const SendEmail: React.FC = () => {
           variables: {
             input: values,
           },
+        }).then(() => {
+          createActivity({
+            variables: {
+              input: {
+                title: "Send email",
+                desc: values.subject,
+                customerId: state.customer.id,
+              },
+            },
+          })
         })
 
         message.success("Success sent mail")

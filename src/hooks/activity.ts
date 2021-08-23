@@ -19,6 +19,16 @@ const query = {
       }
     }
   `,
+  createActivity: gql`
+    mutation createActivity($input: CreateActivityInput!) {
+      createActivity(input: $input) {
+        id
+        title
+        desc
+        createdAt
+      }
+    }
+  `,
   sendEmail: gql`
     mutation sendEmail($input: SendEmailInput) {
       sendEmail(input: $input) {
@@ -30,6 +40,7 @@ const query = {
 
 type ActivityMutation = {
   sendEmail: (options: MutationHookOptions) => Promise<FetchResult<{ message: string }>>
+  createActivity: (options: MutationHookOptions) => Promise<FetchResult<{ createActivity: Activity }>>
 }
 
 interface ActivityResult {
@@ -53,8 +64,10 @@ const useActivityQuery = (options: QueryHookOptions<ActivityResult, ActivityHook
 
 const useActivityMutation = (): ActivityMutation => {
   const [sendEmail] = useMutation<{ message: string }>(query.sendEmail)
+  const [createActivity] = useMutation<{ createActivity: Activity }>(query.createActivity)
 
   return {
+    createActivity,
     sendEmail,
   }
 }

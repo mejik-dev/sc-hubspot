@@ -173,7 +173,7 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
   )
 
   return (
-    <div style={{ height: "100%", background: "#f1faf9" }}>
+    <div style={{ height: "100%", maxHeight: "100vh", background: "#f1faf9", overflow: "hidden" }}>
       <PageHeader
         title={TitleModal}
         onBack={() => history.goBack()}
@@ -218,7 +218,7 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
       </div>
       <Tabs defaultActiveKey="1" className="tab-list">
         <TabPane tab="Activity" key="1">
-          <div style={{ padding: 20, marginTop: 10 }}>
+          <div style={{ padding: 20, marginTop: 10, overflowY: "auto", height: "calc(100vh - 30%)" }}>
             <p style={{ marginBottom: 10 }}>Date</p>
 
             {loading
