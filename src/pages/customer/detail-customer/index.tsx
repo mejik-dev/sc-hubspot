@@ -80,10 +80,10 @@ const DetailCustomer: React.FC = () => {
           </div>
           <BasicList label="Email" value="reiner@gmail.com" classNameValue="text-style" />
           <BasicList label="Phone" classNameValue="text-style" />
-          <SelectList label="Contact Owner" value="Ega Radiegtya" classNameValue="select-style" />
+          {/* <SelectList label="Contact Owner" value="Ega Radiegtya" classNameValue="select-style" />
           <SelectList label="Last contacted" classNameValue="select-style" />
           <SelectList label="Lifecycle stage" value="Subscriber" classNameValue="select-style" />
-          <SelectList label="Lead status" value="New" classNameValue="select-style" />
+          <SelectList label="Lead status" value="New" classNameValue="select-style" /> */}
         </TabPane>
       </Tabs>
     </div>

@@ -25,6 +25,9 @@ interface Customer {
   email: string
   name: string
   phoneNumber: string
+  stage: string
+  status: string
+  updatedAt: string
   companies?: {
     id: string
     name: string

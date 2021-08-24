@@ -11,6 +11,7 @@ import SelectList from "components/detail-contact/SelectList"
 import { useActivityQuery } from "hooks/activity"
 import { useCompanyQuery } from "hooks/company"
 import { useCustomerMutation, useCustomerQuery } from "hooks/customer"
+import { MenuInfo } from "rc-menu/lib/interface"
 import React from "react"
 import { Redirect, useHistory, useLocation, useParams } from "react-router-dom"
 
@@ -35,6 +36,7 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
   const { customerId } = useParams<{ customerId: string }>()
   const { state } = useLocation<{ customer: Customer }>()
   const { customer } = state
+  console.log(customer)
 
   const { data: dataCustomers, refetch: refetchDataQustomers } = useCustomerQuery({
     variables: {
@@ -75,6 +77,43 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
     return <Redirect to="/dashboard/contact" />
   }
 
+  const handleChangeStatus = async ({ key }: MenuInfo) => {
+    await updateCustomer({
+      variables: {
+        id: customerId,
+        input: {
+          status: key,
+        },
+      },
+    })
+      .then((response) => {
+        refetchDataQustomers()
+        refetch()
+        setSelectedCustomer("")
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  const handleChangeStage = async ({ key }: MenuInfo) => {
+    await updateCustomer({
+      variables: {
+        id: customerId,
+        input: {
+          stage: key,
+        },
+      },
+    })
+      .then((response) => {
+        refetchDataQustomers()
+        refetch()
+        setSelectedCustomer("")
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
   const handleAddAssociation = async () => {
     const newCustomer = Array.from(dataCustomers?.customers[0].companies || [])
 
@@ -283,10 +322,45 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
           </div>
           <BasicList label="Email" value={customer.email} classNameValue="text-style" />
           <BasicList label={customer.phoneNumber} classNameValue="text-style" />
-          <SelectList label="Contact Owner" value={customer.name} classNameValue="select-style" />
-          <SelectList label="Last contacted" classNameValue="select-style" />
-          <SelectList label="Lifecycle stage" value="Subscriber" classNameValue="select-style" />
-          <SelectList label="Lead status" value="New" classNameValue="select-style" />
+          <SelectList
+            label="Contact Owner"
+            value={customer.name}
+            classNameValue="select-style"
+            option={[customer.name]}
+          />
+          <BasicList label="Last contacted" classNameValue="select-style" />
+          <SelectList
+            label="Lifecycle stage"
+            value={dataCustomers?.customers[0].stage}
+            classNameValue="select-style"
+            option={[
+              "Subscriber",
+              "Lead",
+              "Marketing qualified lead",
+              "Sales qualified lead",
+              "Opportunity",
+              "Customer",
+              "Evangelist",
+              "Other",
+            ]}
+            onClick={handleChangeStage}
+          />
+          <SelectList
+            label="Lead status"
+            value={dataCustomers?.customers[0].status}
+            classNameValue="select-style"
+            option={[
+              "New",
+              "Open",
+              "In progress",
+              "Open deal",
+              "Unqualified",
+              "Attempted to contact",
+              "Connected",
+              "Bad timing",
+            ]}
+            onClick={handleChangeStatus}
+          />
         </TabPane>
       </Tabs>
     </div>

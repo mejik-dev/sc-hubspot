@@ -16,6 +16,9 @@ const query = {
         name
         email
         phoneNumber
+        stage
+        status
+        updatedAt
         createdAt
         companies {
           id
