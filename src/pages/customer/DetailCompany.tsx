@@ -6,8 +6,6 @@ import { Button, Dropdown, List, Menu, Modal, PageHeader, Tabs, Typography } fro
 import { Phone } from "assets/icons/actions/index"
 import Activity from "components/Activity"
 import CInputAdd from "components/CustomInputAdd"
-import BasicList from "components/detail-contact/BasicList"
-import SelectList from "components/detail-contact/SelectList"
 import { useActivityQuery } from "hooks/activity"
 import { useCompanyMutation, useCompanyQuery } from "hooks/company"
 import { useCustomerQuery } from "hooks/customer"
@@ -255,17 +253,6 @@ const DetailCompany = ({ user = defaultUser }: CustomerProps): JSX.Element => {
               onAdd={handleAddAssociation}
             />
           </div>
-        </TabPane>
-        <TabPane tab="About" key="3">
-          <div style={{ padding: 20, marginTop: 10 }}>
-            <p style={{ marginBottom: 10 }}>About {company.name}</p>
-          </div>
-          <BasicList label="Email" value={`${company.name}@gmail.com`} classNameValue="text-style" />
-          <BasicList value={company.phoneNumber} label="Phone" classNameValue="text-style" />
-          <SelectList label="Contact Owner" value={company.name} classNameValue="select-style" />
-          <SelectList label="Last contacted" classNameValue="select-style" />
-          <SelectList label="Lifecycle stage" value="Subscriber" classNameValue="select-style" />
-          <SelectList label="Lead status" value="New" classNameValue="select-style" />
         </TabPane>
       </Tabs>
     </div>
