@@ -1,15 +1,13 @@
 import "styles/detailCustomer.css"
 
 import Icon from "@ant-design/icons"
-import { CloseOutlined, ExclamationCircleOutlined, MoreOutlined } from "@ant-design/icons"
+import { CloseOutlined, ExclamationCircleOutlined, MoreOutlined, PlusOutlined } from "@ant-design/icons"
 import { Button, Dropdown, List, Menu, Modal, PageHeader, Tabs, Typography } from "antd"
 import { Chat, Msg, Phone } from "assets/icons/actions/index"
 import Activity from "components/Activity"
-import CInputAdd from "components/CustomInputAdd"
 import BasicList from "components/detail-contact/BasicList"
 import SelectList from "components/detail-contact/SelectList"
 import { useActivityQuery } from "hooks/activity"
-import { useCompanyQuery } from "hooks/company"
 import { useCustomerMutation, useCustomerQuery } from "hooks/customer"
 import moment from "moment"
 import { MenuInfo } from "rc-menu/lib/interface"
@@ -38,7 +36,6 @@ const defaultUser = {
 }
 
 const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
-  const [selectedCustomer, setSelectedCustomer] = React.useState<string>()
   const [groupActivity, setGroupActivity] = React.useState<IGroupedActivity<Activity[]>[]>()
 
   const history = useHistory()
@@ -50,15 +47,6 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
     variables: {
       filter: {
         id: customerId,
-      },
-    },
-  })
-
-  const { data: dataCompany } = useCompanyQuery({
-    variables: {
-      sort: "name_ASC",
-      filter: {
-        createdById: user.id,
       },
     },
   })
@@ -79,7 +67,8 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
         customerId,
       },
     })
-  }, [customerId, refetch])
+    refetchDataQustomers()
+  }, [customerId, refetch, refetchDataQustomers])
 
   React.useEffect(() => {
     if (data?.activities.length) {
@@ -121,7 +110,6 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
       .then((response) => {
         refetchDataQustomers()
         refetch()
-        setSelectedCustomer("")
       })
       .catch((err) => {
         console.log(err)
@@ -140,32 +128,6 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
       .then((response) => {
         refetchDataQustomers()
         refetch()
-        setSelectedCustomer("")
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
-  const handleAddAssociation = async () => {
-    const newCustomer = Array.from(dataCustomers?.customers[0].companies || [])
-
-    await updateCustomer({
-      variables: {
-        id: customerId,
-        input: {
-          companiesIds: [
-            ...newCustomer.map((item) => {
-              return item.id
-            }),
-            selectedCustomer,
-          ],
-        },
-      },
-    })
-      .then((response) => {
-        refetchDataQustomers()
-        refetch()
-        setSelectedCustomer("")
       })
       .catch((err) => {
         console.log(err)
@@ -191,7 +153,6 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
           .then((response) => {
             refetchDataQustomers()
             refetch()
-            setSelectedCustomer("")
           })
           .catch((err) => {
             console.log(err)
@@ -289,7 +250,7 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
       </div>
       <Tabs defaultActiveKey="1" className="tab-list">
         <TabPane tab="Activity" key="1">
-          <div style={{ padding: 20, marginTop: 10, overflowY: "auto", height: "calc(100vh - 20%)" }}>
+          <div style={{ padding: 20, marginTop: 10, overflowY: "auto", height: "calc(100vh - 15vh)" }}>
             {Array.from(groupActivity || []).map((item) => {
               return (
                 <>
@@ -345,13 +306,29 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
                 </List.Item>
               )}
             />
-            <CInputAdd
+            {/* <CInputAdd
               option={dataCompany?.companies}
               placeholder="Add contact"
               value={selectedCustomer}
               onChange={(e) => setSelectedCustomer(e)}
               onAdd={handleAddAssociation}
-            />
+            /> */}
+            <div
+              onClick={() =>
+                history.push({
+                  pathname: `/dashboard/customer/association/${customerId}`,
+                  state: { association: dataCustomers?.customers[0]?.companies },
+                })
+              }
+              className="select-data-email"
+              style={{ padding: "16px 24px", justifyContent: "space-between" }}
+              aria-hidden
+            >
+              <Text>Add Contact</Text>
+              <div style={{ border: "none", marginLeft: 24, padding: "0px 8px" }}>
+                <Button style={{ border: "none" }} key="list-loadmore-edit" shape="circle" icon={<PlusOutlined />} />
+              </div>
+            </div>
           </div>
         </TabPane>
         <TabPane tab="About" key="3">
