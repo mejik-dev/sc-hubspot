@@ -51,6 +51,24 @@ const AddOrUpdateCustomer: React.FC = () => {
       message.error("All fields must be filled")
       return
     }
+
+    const isValidEmailRegex =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    const isValidPhoneNumberRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im
+
+    if (!isValidEmailRegex.test(email)) {
+      message.error("Invalid email")
+      setLoading(false)
+      return
+    }
+
+    if (!isValidPhoneNumberRegex.test(phoneNumber)) {
+      console.log("p", phoneNumber)
+      message.error("Invalid Phone number")
+      setLoading(false)
+      return
+    }
+
     try {
       if (location.state.mode === "create") {
         await createCustomer({

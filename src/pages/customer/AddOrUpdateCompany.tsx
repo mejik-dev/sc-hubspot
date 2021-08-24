@@ -54,10 +54,19 @@ const AddOrUpdateCompany: React.FC = () => {
 
     const { name, phoneNumber } = values
 
-    if (!name) {
+    if (!name || !phoneNumber) {
       message.error("All fields must be filled")
       return
     }
+
+    const isValidPhoneNumberRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im
+
+    if (!isValidPhoneNumberRegex.test(phoneNumber)) {
+      message.error("Invalid Phone number")
+      setLoading(false)
+      return
+    }
+
     try {
       if (location.state.mode === "create") {
         await createCompany({
