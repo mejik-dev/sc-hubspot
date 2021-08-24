@@ -26,9 +26,6 @@
   padding-left: 0px;
 }
 
-.input-search .ant-input::placeholder {
-  color: rgba(0, 0, 0, 1);
-}
 
 .input-search .ant-btn {
   border: none !important;
