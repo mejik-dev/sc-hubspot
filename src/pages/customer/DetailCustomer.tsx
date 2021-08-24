@@ -11,6 +11,7 @@ import SelectList from "components/detail-contact/SelectList"
 import { useActivityQuery } from "hooks/activity"
 import { useCompanyQuery } from "hooks/company"
 import { useCustomerMutation, useCustomerQuery } from "hooks/customer"
+import moment from "moment"
 import { MenuInfo } from "rc-menu/lib/interface"
 import React from "react"
 import { Redirect, useHistory, useLocation, useParams } from "react-router-dom"
@@ -19,6 +20,13 @@ const { Text } = Typography
 const { TabPane } = Tabs
 const { confirm } = Modal
 
+interface IGroupedActivity<T> {
+  key: string
+  data: T
+}
+interface BaseData {
+  createdAt: string
+}
 interface CustomerProps {
   user?: User
 }
@@ -31,6 +39,7 @@ const defaultUser = {
 
 const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
   const [selectedCustomer, setSelectedCustomer] = React.useState<string>()
+  const [groupActivity, setGroupActivity] = React.useState<IGroupedActivity<Activity[]>[]>()
 
   const history = useHistory()
   const { customerId } = useParams<{ customerId: string }>()
@@ -71,6 +80,30 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
       },
     })
   }, [customerId, refetch])
+
+  React.useEffect(() => {
+    if (data?.activities.length) {
+      const groupActivity = groupDateActivity(data.activities)
+      if (groupActivity) {
+        const newData = Object.keys(groupActivity).map((key) => ({ key, data: groupActivity[key] }))
+        setGroupActivity(newData)
+      }
+      return
+    }
+    setGroupActivity([])
+  }, [data])
+
+  function groupDateActivity<Type extends BaseData>(data: Type[]) {
+    return data?.reduce<{ [key: string]: Type[] }>((groups, game) => {
+      const date = `${game.createdAt.split("-")[0]}-${game.createdAt.split("-")[1]}`
+
+      if (!groups[date]) {
+        groups[date] = []
+      }
+      groups[date].push(game)
+      return groups
+    }, {})
+  }
 
   if (!state?.customer) {
     return <Redirect to="/dashboard/contact" />
@@ -257,27 +290,33 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
       <Tabs defaultActiveKey="1" className="tab-list">
         <TabPane tab="Activity" key="1">
           <div style={{ padding: 20, marginTop: 10, overflowY: "auto", height: "calc(100vh - 20%)" }}>
-            <p style={{ marginBottom: 10 }}>Date</p>
+            {Array.from(groupActivity || []).map((item) => {
+              return (
+                <>
+                  <p style={{ marginBottom: 10 }}>{moment(item.key).format("MMM YYYY")}</p>
 
-            {loading
-              ? "Loading ..."
-              : data?.activities.map((activity) => (
-                  <Activity
-                    key={activity.id}
-                    title={activity.title}
-                    description={activity.desc}
-                    createdAt={activity.createdAt}
-                    style={{
-                      width: "100%",
-                      marginBottom: 10,
-                      display: "flex",
-                      alignItems: "flex-start",
-                      justifyContent: "center",
-                      flexDirection: "column",
-                      boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
-                    }}
-                  />
-                ))}
+                  {loading
+                    ? "Loading ..."
+                    : item.data.map((activity) => (
+                        <Activity
+                          key={activity.id}
+                          title={activity.title}
+                          description={activity.desc}
+                          createdAt={activity.createdAt}
+                          style={{
+                            width: "100%",
+                            marginBottom: 10,
+                            display: "flex",
+                            alignItems: "flex-start",
+                            justifyContent: "center",
+                            flexDirection: "column",
+                            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
+                          }}
+                        />
+                      ))}
+                </>
+              )
+            })}
           </div>
         </TabPane>
         <TabPane tab="Association" key="2">
