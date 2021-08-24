@@ -54,7 +54,8 @@ const AddOrUpdateCustomer: React.FC = () => {
 
     const isValidEmailRegex =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    const isValidPhoneNumberRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im
+
+    const isValidPhoneNumberRegex = /\+?([ -]?\d+)+|\(\d+\)([ -]\d+)/
 
     if (!isValidEmailRegex.test(email)) {
       message.error("Invalid email")

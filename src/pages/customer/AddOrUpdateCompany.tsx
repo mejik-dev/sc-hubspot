@@ -56,10 +56,11 @@ const AddOrUpdateCompany: React.FC = () => {
 
     if (!name || !phoneNumber) {
       message.error("All fields must be filled")
+      setLoading(false)
       return
     }
 
-    const isValidPhoneNumberRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im
+    const isValidPhoneNumberRegex = /\+?([ -]?\d+)+|\(\d+\)([ -]\d+)/
 
     if (!isValidPhoneNumberRegex.test(phoneNumber)) {
       message.error("Invalid Phone number")
