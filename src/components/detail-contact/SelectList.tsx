@@ -36,7 +36,7 @@ const SelectList: React.FC<IBasicListProps> = ({ label, value, classNameValue, o
         {label}
       </p>
       <Dropdown overlay={menu} trigger={["click"]}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer" }}>
           <p className={classNameValue} style={{ marginBottom: 5 }}>
             {value}
           </p>
