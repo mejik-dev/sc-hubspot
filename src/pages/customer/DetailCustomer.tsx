@@ -36,7 +36,6 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
   const { customerId } = useParams<{ customerId: string }>()
   const { state } = useLocation<{ customer: Customer }>()
   const { customer } = state
-  console.log(customer)
 
   const { data: dataCustomers, refetch: refetchDataQustomers } = useCustomerQuery({
     variables: {

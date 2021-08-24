@@ -11,7 +11,7 @@ import { gql } from "graphql-tag"
 const query = {
   getActivities: gql`
     query getActivities($filter: ActivityFilter) {
-      activities(where: $filter) {
+      activities(where: $filter, orderBy: createdAt_DESC) {
         id
         title
         desc
