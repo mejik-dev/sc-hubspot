@@ -1,7 +1,7 @@
 import "styles/customer.css"
 
 import Icon from "@ant-design/icons"
-import { ExclamationCircleOutlined } from "@ant-design/icons"
+import { CloseCircleOutlined, ExclamationCircleOutlined, SearchOutlined } from "@ant-design/icons"
 import { Input, Layout, Modal, Select, Tabs } from "antd"
 import { AddCompany, AddContact } from "assets/icons"
 import List from "components/List"
@@ -11,7 +11,6 @@ import * as React from "react"
 import { useHistory, useParams } from "react-router-dom"
 
 const { Content } = Layout
-const { Search } = Input
 const { TabPane } = Tabs
 const { Option } = Select
 const { confirm } = Modal
@@ -58,8 +57,8 @@ const Customer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
   })
   const { deleteCompany } = useCompanyMutation()
 
-  const [groupedCustomer, setGroupedCustomer] = React.useState<IGroupedData<Customer[]>[]>()
-  const [groupedCompanies, setGroupedCompanies] = React.useState<IGroupedData<Company[]>[]>()
+  const [groupedCustomer, setGroupedCustomer] = React.useState<IGroupedData<Customer[]>[]>([])
+  const [groupedCompanies, setGroupedCompanies] = React.useState<IGroupedData<Company[]>[]>([])
   const [activeTab, setActiveTab] = React.useState<number>(currentTab === "companies" ? 2 : 1)
   const [searchText, setSearchText] = React.useState<string>("")
 
@@ -79,26 +78,30 @@ const Customer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
       const groupedCustomer = groupDataByFirstCharName<Customer>(dataCustomers.customers)
       if (groupedCustomer) {
         const newData = Object.keys(groupedCustomer).map((key) => ({ key, data: groupedCustomer[key] }))
-        setGroupedCustomer(newData)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const newGroupedCustomer = searchGroupedData(searchText, newData) as any
+        setGroupedCustomer(newGroupedCustomer)
       }
       return
     }
 
     setGroupedCustomer([])
-  }, [dataCustomers?.customers])
+  }, [dataCustomers?.customers, searchText])
 
   React.useEffect(() => {
     if (companies?.companies.length) {
       const groupedCompanies = groupDataByFirstCharName<Company>(companies.companies)
       if (groupedCompanies) {
         const newData = Object.keys(groupedCompanies).map((key) => ({ key, data: groupedCompanies[key] }))
-        setGroupedCompanies(newData)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const newGroupedCompanies = searchGroupedData(searchText, newData) as any
+        setGroupedCompanies(newGroupedCompanies)
       }
       return
     }
 
     setGroupedCompanies([])
-  }, [companies?.companies])
+  }, [companies?.companies, searchText])
 
   React.useEffect(() => {
     if (history.action === "POP") {
@@ -117,6 +120,25 @@ const Customer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
       setActiveTab(1)
     }
   }, [currentTab])
+
+  function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
+    setSearchText(e.target.value)
+  }
+
+  function searchGroupedData(name: string, groupedData: Array<IGroupedData<Customer[]> | IGroupedData<Company[]>>) {
+    if (name) {
+      let groups = groupedData.filter((group) => group.key.includes(name[0]))
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      groups = groups.map((group: any) => {
+        group.data = group.data.filter((data: Customer | Company) => data.name.includes(name))
+        return group
+      })
+
+      return groups
+    }
+
+    return groupedData
+  }
 
   function changeTabs(key: string) {
     if (parseInt(key) === 1) {
@@ -180,12 +202,24 @@ const Customer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
 
   return (
     <Layout className="layout-contact">
-      <Search
+      <Input
+        bordered={false}
         value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
+        onChange={handleSearch}
         className="input-search"
-        placeholder="Contacts"
+        placeholder="Search Name..."
         style={{ padding: "0px 20px" }}
+        suffix={
+          searchText ? (
+            <CloseCircleOutlined className="reset-search" onClick={() => setSearchText("")}>
+              reset
+            </CloseCircleOutlined>
+          ) : (
+            <SearchOutlined className="trigger-search" onClick={() => setSearchText("")}>
+              search
+            </SearchOutlined>
+          )
+        }
       />
       <div className="btn-add">
         {activeTab === 1 ? (
