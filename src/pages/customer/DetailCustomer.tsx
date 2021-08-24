@@ -285,34 +285,30 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
             <div style={{ padding: "3px 20px" }}>
               <Typography>Customers</Typography>
             </div>
-            <List
-              bordered
-              size="large"
-              dataSource={dataCustomers?.customers[0]?.companies || []}
-              renderItem={(item) => (
-                <List.Item
-                  style={{ background: "#FFF" }}
-                  actions={[
-                    <Button
-                      onClick={() => handleDeleteAssociation(item.id)}
-                      style={{ border: "none" }}
-                      key="list-loadmore-edit"
-                      shape="circle"
-                      icon={<CloseOutlined />}
-                    />,
-                  ]}
-                >
-                  <Typography>{item.name}</Typography>
-                </List.Item>
-              )}
-            />
-            {/* <CInputAdd
-              option={dataCompany?.companies}
-              placeholder="Add contact"
-              value={selectedCustomer}
-              onChange={(e) => setSelectedCustomer(e)}
-              onAdd={handleAddAssociation}
-            /> */}
+            {dataCustomers?.customers[0]?.companies?.length ? (
+              <List
+                bordered
+                size="large"
+                dataSource={dataCustomers?.customers[0]?.companies || []}
+                renderItem={(item) => (
+                  <List.Item
+                    style={{ background: "#FFF" }}
+                    actions={[
+                      <Button
+                        onClick={() => handleDeleteAssociation(item.id)}
+                        style={{ border: "none" }}
+                        key="list-loadmore-edit"
+                        shape="circle"
+                        icon={<CloseOutlined />}
+                      />,
+                    ]}
+                  >
+                    <Typography>{item.name}</Typography>
+                  </List.Item>
+                )}
+              />
+            ) : null}
+
             <div
               onClick={() =>
                 history.push({
