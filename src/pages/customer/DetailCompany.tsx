@@ -114,9 +114,12 @@ const DetailCompany = ({ user = defaultUser }: CustomerProps): JSX.Element => {
           alignItems: "start",
           justifyContent: "center",
           flexDirection: "column",
+          textAlign: "left",
         }}
       >
-        <Text className="header-subtitle">Company</Text>
+        <Text style={{ width: "100%" }} className="header-subtitle">
+          Company
+        </Text>
 
         <Text className="header-title">{company.name}</Text>
         <Text className="header-title">{company.address}</Text>
