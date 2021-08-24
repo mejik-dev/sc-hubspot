@@ -1,4 +1,5 @@
 // TODO: fix eslint import sort
+import AddAssociationCustomer from "pages/customer/AddAssociationCustomer"
 import AddOrUpdateCompany from "pages/customer/AddOrUpdateCompany"
 import AddOrUpdateCustomer from "pages/customer/AddOrUpdateCustomer"
 import SendEmail from "pages/customer/detail-customer/SendEmail"
@@ -48,6 +49,13 @@ function RouterProvider(): JSX.Element {
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
 
+        <PrivateRoute
+          autheticated={authenticated}
+          nonAuthenticatedRedirect="/"
+          path="/dashboard/customer/association/:customerId"
+        >
+          <AddAssociationCustomer user={data?.user} />
+        </PrivateRoute>
         <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/customer/send-email">
           <SendEmail />
         </PrivateRoute>
@@ -72,6 +80,7 @@ function RouterProvider(): JSX.Element {
         <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard/:currentTab">
           <Customer user={data?.user} />
         </PrivateRoute>
+
         <PrivateRoute autheticated={authenticated} nonAuthenticatedRedirect="/" path="/dashboard">
           <Customer user={data?.user} />
         </PrivateRoute>
