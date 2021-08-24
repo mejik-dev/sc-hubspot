@@ -218,7 +218,7 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
       </div>
       <Tabs defaultActiveKey="1" className="tab-list">
         <TabPane tab="Activity" key="1">
-          <div style={{ padding: 20, marginTop: 10, overflowY: "auto", height: "calc(100vh - 30%)" }}>
+          <div style={{ padding: 20, marginTop: 10, overflowY: "auto", height: "calc(100vh - 20%)" }}>
             <p style={{ marginBottom: 10 }}>Date</p>
 
             {loading
@@ -243,7 +243,7 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
           </div>
         </TabPane>
         <TabPane tab="Association" key="2">
-          <div style={{ overflowY: "auto", height: "calc(100vh - 30%)" }}>
+          <div style={{ overflowY: "auto", height: "calc(100vh - 20%)" }}>
             <div style={{ padding: "3px 20px" }}>
               <Typography>Customers</Typography>
             </div>

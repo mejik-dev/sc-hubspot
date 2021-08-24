@@ -174,7 +174,7 @@ const DetailCompany = ({ user = defaultUser }: CustomerProps): JSX.Element => {
   )
 
   return (
-    <div style={{ height: "100%", background: "#f1faf9" }}>
+    <div style={{ height: "100%", background: "#f1faf9", maxHeight: "100vh" }}>
       <PageHeader
         title={TitleModal}
         onBack={() => history.goBack()}
@@ -197,7 +197,7 @@ const DetailCompany = ({ user = defaultUser }: CustomerProps): JSX.Element => {
       </div>
       <Tabs defaultActiveKey="1" className="tab-list">
         <TabPane tab="Activity" key="1">
-          <div style={{ padding: 20, marginTop: 10 }}>
+          <div style={{ padding: 20, marginTop: 10, overflowY: "auto", height: "calc(100vh - 20%)" }}>
             <p style={{ marginBottom: 10 }}>Date</p>
 
             {loading
@@ -222,37 +222,39 @@ const DetailCompany = ({ user = defaultUser }: CustomerProps): JSX.Element => {
           </div>
         </TabPane>
         <TabPane tab="Associations" key="2">
-          <div style={{ padding: "3px 20px" }}>
-            <Typography>Customers</Typography>
+          <div style={{ overflowY: "auto", height: "calc(100vh - 20%)" }}>
+            <div style={{ padding: "3px 20px" }}>
+              <Typography>Customers</Typography>
+            </div>
+            <List
+              bordered
+              size="large"
+              dataSource={companies?.companies[0].customers}
+              renderItem={(item) => (
+                <List.Item
+                  style={{ background: "#FFF" }}
+                  actions={[
+                    <Button
+                      onClick={() => handleDeleteAssociation(item.id)}
+                      style={{ border: "none" }}
+                      key="list-loadmore-edit"
+                      shape="circle"
+                      icon={<CloseOutlined />}
+                    />,
+                  ]}
+                >
+                  <Typography>{item.name}</Typography>
+                </List.Item>
+              )}
+            />
+            <CInputAdd
+              option={dataCustomers?.customers}
+              placeholder="Add contact"
+              value={selectedCustomer}
+              onChange={(e) => setSelectedCustomer(e)}
+              onAdd={handleAddAssociation}
+            />
           </div>
-          <List
-            bordered
-            size="large"
-            dataSource={companies?.companies[0].customers}
-            renderItem={(item) => (
-              <List.Item
-                style={{ background: "#FFF" }}
-                actions={[
-                  <Button
-                    onClick={() => handleDeleteAssociation(item.id)}
-                    style={{ border: "none" }}
-                    key="list-loadmore-edit"
-                    shape="circle"
-                    icon={<CloseOutlined />}
-                  />,
-                ]}
-              >
-                <Typography>{item.name}</Typography>
-              </List.Item>
-            )}
-          />
-          <CInputAdd
-            option={dataCustomers?.customers}
-            placeholder="Add contact"
-            value={selectedCustomer}
-            onChange={(e) => setSelectedCustomer(e)}
-            onAdd={handleAddAssociation}
-          />
         </TabPane>
         <TabPane tab="About" key="3">
           <div style={{ padding: 20, marginTop: 10 }}>
