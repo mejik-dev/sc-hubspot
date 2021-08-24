@@ -133,7 +133,7 @@ const DetailCompany = ({ user = defaultUser }: CustomerProps): JSX.Element => {
   )
 
   return (
-    <div style={{ height: "100%", background: "#f1faf9", maxHeight: "100vh" }}>
+    <div style={{ height: "100%", background: "#f1faf9", maxHeight: "100vh", overflowY: "hidden" }}>
       <PageHeader
         title={TitleModal}
         onBack={() => history.goBack()}
@@ -156,7 +156,7 @@ const DetailCompany = ({ user = defaultUser }: CustomerProps): JSX.Element => {
       </div>
       <Tabs defaultActiveKey="1" className="tab-list">
         <TabPane tab="Activity" key="1">
-          <div style={{ padding: 20, marginTop: 10, overflowY: "auto", height: "calc(100vh - 20%)" }}>
+          <div style={{ padding: 20, marginTop: 10, overflowY: "auto", height: "calc(100vh - 15vh)" }}>
             <p style={{ marginBottom: 10 }}>Date</p>
 
             {loading
@@ -181,7 +181,7 @@ const DetailCompany = ({ user = defaultUser }: CustomerProps): JSX.Element => {
           </div>
         </TabPane>
         <TabPane tab="Associations" key="2">
-          <div style={{ overflowY: "auto", height: "calc(100vh - 20%)" }}>
+          <div style={{ overflowY: "auto", height: "calc(100vh - 15vh)" }}>
             <div style={{ padding: "3px 20px" }}>
               <Typography>Customers</Typography>
             </div>
@@ -206,13 +206,7 @@ const DetailCompany = ({ user = defaultUser }: CustomerProps): JSX.Element => {
                 </List.Item>
               )}
             />
-            {/* <CInputAdd
-              option={dataCustomers?.customers}
-              placeholder="Add contact"
-              value={selectedCustomer}
-              onChange={(e) => setSelectedCustomer(e)}
-              onAdd={handleAddAssociation}
-            /> */}
+
             <div
               onClick={() =>
                 history.push({

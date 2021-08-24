@@ -1,3 +1,4 @@
+import { CloseCircleOutlined, SearchOutlined } from "@ant-design/icons"
 import { Checkbox, Col, Input, Layout, PageHeader, Row } from "antd"
 import { CheckboxValueType } from "antd/lib/checkbox/Group"
 import { useCompanyQuery } from "hooks/company"
@@ -6,7 +7,6 @@ import * as React from "react"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 
 const { Content } = Layout
-const { Search } = Input
 
 interface CustomerProps {
   user?: User
@@ -21,6 +21,7 @@ const defaultUser = {
 const AddAssociationCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
   const [selected, setSelected] = React.useState<CheckboxValueType[]>()
   const [searchText, setSearchText] = React.useState<string>("")
+  const [listCompany, setListCompany] = React.useState<Company[]>()
   const [loading, setLoading] = React.useState<boolean>(false)
 
   const { customerId } = useParams<{ customerId: string }>()
@@ -46,6 +47,23 @@ const AddAssociationCustomer = ({ user = defaultUser }: CustomerProps): JSX.Elem
     }
   }, [association])
 
+  React.useEffect(() => {
+    if (companies?.companies.length) {
+      const newList = searchCompanyData(searchText, companies.companies)
+      setListCompany(newList)
+    }
+  }, [companies, searchText])
+
+  const searchCompanyData = (name: string, data: Company[]) => {
+    if (name) {
+      return data.filter((item: { name: string }) => {
+        return item.name.toLowerCase().includes(name.toLowerCase())
+      })
+    }
+
+    return data
+  }
+
   const handleAddAssociation = async () => {
     setLoading(true)
     await updateCustomer({
@@ -67,6 +85,10 @@ const AddAssociationCustomer = ({ user = defaultUser }: CustomerProps): JSX.Elem
       })
   }
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value)
+  }
+
   const onChange = (checkedValues: CheckboxValueType[]) => {
     setSelected(checkedValues)
   }
@@ -83,18 +105,30 @@ const AddAssociationCustomer = ({ user = defaultUser }: CustomerProps): JSX.Elem
         ]}
         style={{ background: "#fff", width: "100%" }}
       />
-      <Search
+      <Input
+        bordered={false}
         value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
+        onChange={handleSearch}
         className="input-search"
-        placeholder="Contacts"
+        placeholder="Search Name..."
         style={{ padding: "0px 20px" }}
+        suffix={
+          searchText ? (
+            <CloseCircleOutlined className="reset-search" onClick={() => setSearchText("")}>
+              reset
+            </CloseCircleOutlined>
+          ) : (
+            <SearchOutlined className="trigger-search" onClick={() => setSearchText("")}>
+              search
+            </SearchOutlined>
+          )
+        }
       />
 
       <Content className="container-content-dashboard">
         <div style={{ overflow: "auto", height: "100%", width: "100%" }}>
           <Checkbox.Group value={selected} defaultValue={selected} style={{ width: "100%" }} onChange={onChange}>
-            {Array.from(companies?.companies || []).map((item) => {
+            {Array.from(listCompany || []).map((item) => {
               return (
                 <Row
                   key={item.id}
