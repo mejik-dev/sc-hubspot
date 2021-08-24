@@ -37,7 +37,11 @@ const Customer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
   const history = useHistory()
   const { currentTab } = useParams<{ currentTab: string }>()
 
-  const { data: dataCustomers, refetch: refetchDataQustomers } = useCustomerQuery({
+  const {
+    data: dataCustomers,
+    loading: loadingCustomers,
+    refetch: refetchDataQustomers,
+  } = useCustomerQuery({
     variables: {
       sort: "name_ASC",
       filter: {
@@ -47,7 +51,11 @@ const Customer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
   })
   const { deleteCustomer } = useCustomerMutation()
 
-  const { data: companies, refetch: refetchDataCompanies } = useCompanyQuery({
+  const {
+    data: companies,
+    loading: loadingCompanies,
+    refetch: refetchDataCompanies,
+  } = useCompanyQuery({
     variables: {
       sort: "name_ASC",
       filter: {
@@ -262,29 +270,33 @@ const Customer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
               </Select>
             </div>
             <div style={{ overflow: "auto", height: "calc(100vh - 18%)" }}>
-              {Array.from(groupedCustomer || []).map((item) => {
-                return (
-                  <List
-                    key={item.key}
-                    title={item.key}
-                    list={item.data}
-                    renderItem={(item) => item.name}
-                    onDelete={(item) => handleDeleteCustomer(item.id)}
-                    onEdit={(item) =>
-                      history.push({
-                        pathname: "/dashboard/update-customer",
-                        state: { mode: "update", data: item },
-                      })
-                    }
-                    onClickItem={(item) => {
-                      history.push({
-                        pathname: "/dashboard/customer/" + item.id,
-                        state: { customer: item },
-                      })
-                    }}
-                  />
-                )
-              })}
+              {loadingCustomers ? (
+                <span>Loading ...</span>
+              ) : (
+                Array.from(groupedCustomer || []).map((item) => {
+                  return (
+                    <List
+                      key={item.key}
+                      title={item.key}
+                      list={item.data}
+                      renderItem={(item) => item.name}
+                      onDelete={(item) => handleDeleteCustomer(item.id)}
+                      onEdit={(item) =>
+                        history.push({
+                          pathname: "/dashboard/update-customer",
+                          state: { mode: "update", data: item },
+                        })
+                      }
+                      onClickItem={(item) => {
+                        history.push({
+                          pathname: "/dashboard/customer/" + item.id,
+                          state: { customer: item },
+                        })
+                      }}
+                    />
+                  )
+                })
+              )}
             </div>
           </TabPane>
           <TabPane tab="Company" key="2">
@@ -299,29 +311,33 @@ const Customer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
               </Select>
             </div>
             <div style={{ overflow: "auto", height: "calc(100vh - 18%)" }}>
-              {Array.from(groupedCompanies || []).map((item) => {
-                return (
-                  <List
-                    key={item.key}
-                    title={item.key}
-                    list={item.data}
-                    renderItem={(item) => item.name}
-                    onDelete={(item) => handleDeleteCompany(item.id)}
-                    onEdit={(item) =>
-                      history.push({
-                        pathname: "/dashboard/update-company",
-                        state: { mode: "update", data: item },
-                      })
-                    }
-                    onClickItem={(item) => {
-                      history.push({
-                        pathname: "/dashboard/company/" + item.id,
-                        state: { company: item },
-                      })
-                    }}
-                  />
-                )
-              })}
+              {loadingCompanies ? (
+                <span>Loading...</span>
+              ) : (
+                Array.from(groupedCompanies || []).map((item) => {
+                  return (
+                    <List
+                      key={item.key}
+                      title={item.key}
+                      list={item.data}
+                      renderItem={(item) => item.name}
+                      onDelete={(item) => handleDeleteCompany(item.id)}
+                      onEdit={(item) =>
+                        history.push({
+                          pathname: "/dashboard/update-company",
+                          state: { mode: "update", data: item },
+                        })
+                      }
+                      onClickItem={(item) => {
+                        history.push({
+                          pathname: "/dashboard/company/" + item.id,
+                          state: { company: item },
+                        })
+                      }}
+                    />
+                  )
+                })
+              )}
             </div>
           </TabPane>
         </Tabs>
