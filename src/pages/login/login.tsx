@@ -4,14 +4,18 @@ import Icon from "@ant-design/icons"
 import { Button, Form, Input, Layout, Typography } from "antd"
 import { Logo } from "assets/icons"
 import { useLogin } from "hooks/auth"
+import { UserQuery } from "hooks/user"
 import { setCookie } from "nookies"
 import * as React from "react"
+import { useHistory } from "react-router-dom"
 
 const { Link, Text } = Typography
 const { Header, Footer, Content } = Layout
 
 const Login: React.FC = () => {
   const login = useLogin()
+  const { data } = UserQuery()
+  const history = useHistory()
 
   const [value, setValue] = React.useState({
     email: "",
@@ -21,6 +25,13 @@ const Login: React.FC = () => {
   const [loading, setLoading] = React.useState(false)
 
   const disabled = !value.email || !value.password || loading
+  const authenticated = Boolean(data?.user?.id)
+
+  React.useEffect(() => {
+    if (authenticated) {
+      return history.push("/dashboard")
+    }
+  }, [authenticated, history])
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue((previous) => ({ ...previous, [e.target.name]: e.target.value }))

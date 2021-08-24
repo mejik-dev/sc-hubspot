@@ -4,14 +4,18 @@ import Icon from "@ant-design/icons"
 import { Button, Col, Form, Input, Layout, Row, Typography } from "antd"
 import { Logo } from "assets/icons"
 import { useRegister } from "hooks/auth"
+import { UserQuery } from "hooks/user"
 import { setCookie } from "nookies"
 import * as React from "react"
+import { useHistory } from "react-router-dom"
 
 const { Link, Text } = Typography
 const { Header, Footer, Content } = Layout
 
 const Register: React.FC = () => {
   const register = useRegister()
+  const history = useHistory()
+  const { data } = UserQuery()
 
   const [values, setValues] = React.useState({
     email: "",
@@ -21,6 +25,13 @@ const Register: React.FC = () => {
   })
 
   const [loading, setLoading] = React.useState(false)
+  const authenticated = Boolean(data?.user?.id)
+
+  React.useEffect(() => {
+    if (authenticated) {
+      return history.push("/dashboard")
+    }
+  }, [authenticated, history])
 
   const disabled = !values.email || !values.firstName || !values.password || !values.lastName || loading
 

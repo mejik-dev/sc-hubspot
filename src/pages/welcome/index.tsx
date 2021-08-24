@@ -4,6 +4,7 @@ import Icon from "@ant-design/icons"
 import { RiseOutlined } from "@ant-design/icons"
 import { Button, Layout, Tag, Typography } from "antd"
 import { Logo } from "assets/icons"
+import { UserQuery } from "hooks/user"
 import * as React from "react"
 import { useHistory } from "react-router-dom"
 
@@ -12,6 +13,15 @@ const { Text, Paragraph } = Typography
 
 const Welcome: React.FC = () => {
   const history = useHistory()
+  const { data } = UserQuery()
+
+  const authenticated = Boolean(data?.user?.id)
+
+  React.useEffect(() => {
+    if (authenticated) {
+      return history.push("/dashboard")
+    }
+  }, [authenticated, history])
 
   return (
     <Layout className="layout-welcome">
