@@ -16,10 +16,16 @@ const formItemLayout = {
   },
 }
 
+interface IStateValue {
+  name: string
+  phoneNumber: string
+}
+
 const AddOrUpdateCompany: React.FC = () => {
   const [loading, setLoading] = React.useState<boolean>(false)
-  const [values, setValues] = React.useState({
+  const [values, setValues] = React.useState<IStateValue>({
     name: "",
+    phoneNumber: "",
   })
 
   const history = useHistory()
@@ -29,9 +35,10 @@ const AddOrUpdateCompany: React.FC = () => {
 
   React.useEffect(() => {
     if (location.state && location.state.mode === "update" && location.state.data) {
-      const { name } = location.state.data
+      const { name, phoneNumber } = location.state.data
       setValues({
         name: name,
+        phoneNumber: phoneNumber || "",
       })
     }
   }, [location.state])
@@ -45,7 +52,7 @@ const AddOrUpdateCompany: React.FC = () => {
 
     setLoading(true)
 
-    const { name } = values
+    const { name, phoneNumber } = values
 
     if (!name) {
       message.error("All fields must be filled")
@@ -57,6 +64,7 @@ const AddOrUpdateCompany: React.FC = () => {
           variables: {
             input: {
               name,
+              phoneNumber,
             },
           },
         })
@@ -68,6 +76,7 @@ const AddOrUpdateCompany: React.FC = () => {
             id: location.state.data?.id,
             input: {
               name,
+              phoneNumber,
             },
           },
         })
@@ -123,6 +132,15 @@ const AddOrUpdateCompany: React.FC = () => {
           name="name"
           placeholder="Company Name"
           value={values.name}
+          onChange={onChange}
+          containerStyle={{ flexDirection: "column", alignItems: "start", justifyContent: "center" }}
+        />
+        <CustomInputFloating
+          label="Phone"
+          classNameValue="select-style"
+          name="phoneNumber"
+          value={values?.phoneNumber}
+          placeholder="Phone"
           onChange={onChange}
           containerStyle={{ flexDirection: "column", alignItems: "start", justifyContent: "center" }}
         />
