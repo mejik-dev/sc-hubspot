@@ -321,7 +321,7 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
                 })
               }
               className="select-data-email"
-              style={{ padding: "16px 24px", justifyContent: "space-between" }}
+              style={{ padding: "16px 24px", justifyContent: "space-between", cursor: "pointer" }}
               aria-hidden
             >
               <Text>Add Contact</Text>

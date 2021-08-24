@@ -1,14 +1,12 @@
 import "styles/detailCustomer.css"
 
 import Icon from "@ant-design/icons"
-import { CloseOutlined, ExclamationCircleOutlined, MoreOutlined } from "@ant-design/icons"
+import { CloseOutlined, ExclamationCircleOutlined, MoreOutlined, PlusOutlined } from "@ant-design/icons"
 import { Button, Dropdown, List, Menu, Modal, PageHeader, Tabs, Typography } from "antd"
 import { Phone } from "assets/icons/actions/index"
 import Activity from "components/Activity"
-import CInputAdd from "components/CustomInputAdd"
 import { useActivityQuery } from "hooks/activity"
 import { useCompanyMutation, useCompanyQuery } from "hooks/company"
-import { useCustomerQuery } from "hooks/customer"
 import React from "react"
 import { Redirect, useHistory, useLocation, useParams } from "react-router-dom"
 
@@ -27,23 +25,12 @@ const defaultUser = {
 }
 
 const DetailCompany = ({ user = defaultUser }: CustomerProps): JSX.Element => {
-  const [selectedCustomer, setSelectedCustomer] = React.useState<string>()
-
   const history = useHistory()
   const { companyId } = useParams<{ companyId: string }>()
   const { state } = useLocation<{ company: Company }>()
   const { company } = state
 
   const { deleteCompany, updateCompany } = useCompanyMutation()
-
-  const { data: dataCustomers } = useCustomerQuery({
-    variables: {
-      sort: "name_ASC",
-      filter: {
-        createdById: user?.id,
-      },
-    },
-  })
 
   const { data: companies, refetch: refetchDataCompanies } = useCompanyQuery({
     variables: {
@@ -67,33 +54,8 @@ const DetailCompany = ({ user = defaultUser }: CustomerProps): JSX.Element => {
         companyId,
       },
     })
-  }, [companyId, refetch])
-
-  const handleAddAssociation = async () => {
-    const newCompanies = Array.from(companies?.companies[0].customers || [])
-
-    await updateCompany({
-      variables: {
-        id: companyId,
-        input: {
-          customersIds: [
-            ...newCompanies.map((item) => {
-              return item.id
-            }),
-            selectedCustomer,
-          ],
-        },
-      },
-    })
-      .then((response) => {
-        refetchDataCompanies()
-        refetch()
-        setSelectedCustomer("")
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
+    refetchDataCompanies()
+  }, [companyId, refetch, refetchDataCompanies])
 
   const handleDeleteAssociation = async (id: string) => {
     const newCompanies = Array.from(companies?.companies[0].customers || [])
@@ -114,7 +76,6 @@ const DetailCompany = ({ user = defaultUser }: CustomerProps): JSX.Element => {
           .then((response) => {
             refetchDataCompanies()
             refetch()
-            setSelectedCustomer("")
           })
           .catch((err) => {
             console.log(err)
@@ -245,13 +206,29 @@ const DetailCompany = ({ user = defaultUser }: CustomerProps): JSX.Element => {
                 </List.Item>
               )}
             />
-            <CInputAdd
+            {/* <CInputAdd
               option={dataCustomers?.customers}
               placeholder="Add contact"
               value={selectedCustomer}
               onChange={(e) => setSelectedCustomer(e)}
               onAdd={handleAddAssociation}
-            />
+            /> */}
+            <div
+              onClick={() =>
+                history.push({
+                  pathname: `/dashboard/company/association/${companyId}`,
+                  state: { association: companies?.companies[0].customers },
+                })
+              }
+              className="select-data-email"
+              style={{ padding: "16px 24px", justifyContent: "space-between", cursor: "pointer" }}
+              aria-hidden
+            >
+              <Text>Add Contact</Text>
+              <div style={{ border: "none", marginLeft: 24, padding: "0px 8px" }}>
+                <Button style={{ border: "none" }} key="list-loadmore-edit" shape="circle" icon={<PlusOutlined />} />
+              </div>
+            </div>
           </div>
         </TabPane>
       </Tabs>
