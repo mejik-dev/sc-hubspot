@@ -323,7 +323,7 @@ const DetailCustomer = ({ user = defaultUser }: CustomerProps): JSX.Element => {
               style={{ padding: "16px 24px", justifyContent: "space-between", cursor: "pointer" }}
               aria-hidden
             >
-              <Text>Add Contact</Text>
+              <Text>Add company</Text>
               <div style={{ border: "none", marginLeft: 24, padding: "0px 8px" }}>
                 <Button style={{ border: "none" }} key="list-loadmore-edit" shape="circle" icon={<PlusOutlined />} />
               </div>

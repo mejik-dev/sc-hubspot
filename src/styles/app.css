@@ -23,3 +23,8 @@ html {
   cursor: pointer;
   color: #55988d;
 }
+
+.btn-save-modal-disabled {
+  color: black;
+  opacity: 0.5;
+}

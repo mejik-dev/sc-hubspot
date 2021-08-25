@@ -186,7 +186,7 @@ const DetailCompany = ({ user = defaultUser }: CustomerProps): JSX.Element => {
         <TabPane tab="Associations" key="2">
           <div style={{ overflowY: "auto", height: "calc(100vh - 15vh)" }}>
             <div style={{ padding: "3px 20px" }}>
-              <Typography>Customers</Typography>
+              <Typography>Companies</Typography>
             </div>
             {companies?.companies[0].customers.length ? (
               <List
@@ -223,7 +223,7 @@ const DetailCompany = ({ user = defaultUser }: CustomerProps): JSX.Element => {
               style={{ padding: "16px 24px", justifyContent: "space-between", cursor: "pointer" }}
               aria-hidden
             >
-              <Text>Add Contact</Text>
+              <Text>Add contact</Text>
               <div style={{ border: "none", marginLeft: 24, padding: "0px 8px" }}>
                 <Button style={{ border: "none" }} key="list-loadmore-edit" shape="circle" icon={<PlusOutlined />} />
               </div>
