@@ -122,7 +122,12 @@ const AddOrUpdateCompany: React.FC = () => {
         title=""
         onBack={() => history.goBack()}
         extra={[
-          <div key="save" className="btn-save-modal" aria-hidden="true" onClick={() => onFinish(values)}>
+          <div
+            key="save"
+            className={loading ? "btn-save-modal-disabled" : "btn-save-modal"}
+            aria-hidden="true"
+            onClick={() => !loading && onFinish(values)}
+          >
             {loading ? "Loading .." : "Save"}
           </div>,
         ]}
